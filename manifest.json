@@ -1,0 +1,21 @@
+{
+  "short_name": "Bytecoin Zero v0.1",
+  "name": "End-to-end secure Bytecoin wallet",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "favicon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#ee4287",
+  "background_color": "#ffffff"
+}

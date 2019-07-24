@@ -1,0 +1,19 @@
+{
+  "files": {
+    "main.css": "./static/css/main.b4b90673.chunk.css",
+    "main.js": "./static/js/main.942ec820.chunk.js",
+    "main.js.map": "./static/js/main.942ec820.chunk.js.map",
+    "runtime~main.js": "./static/js/runtime~main.d653cc00.js",
+    "runtime~main.js.map": "./static/js/runtime~main.d653cc00.js.map",
+    "static/js/2.b60cc66c.chunk.js": "./static/js/2.b60cc66c.chunk.js",
+    "static/js/2.b60cc66c.chunk.js.map": "./static/js/2.b60cc66c.chunk.js.map",
+    "index.html": "./index.html",
+    "precache-manifest.c235e6e0dee588fbca876c0b60be3cde.js": "./precache-manifest.c235e6e0dee588fbca876c0b60be3cde.js",
+    "service-worker.js": "./service-worker.js",
+    "static/css/main.b4b90673.chunk.css.map": "./static/css/main.b4b90673.chunk.css.map",
+    "static/media/Arrow_northeast.1f67c9d1.svg": "./static/media/Arrow_northeast.1f67c9d1.svg",
+    "static/media/Arrow_southeast.9f3f690f.svg": "./static/media/Arrow_southeast.9f3f690f.svg",
+    "static/media/Arrow_southwest.781cea01.svg": "./static/media/Arrow_southwest.781cea01.svg",
+    "static/media/logo.svg": "./static/media/logo.5575295b.svg"
+  }
+}
