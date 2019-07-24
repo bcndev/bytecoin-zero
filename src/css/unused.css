@@ -1,0 +1,44 @@
+/*
+ * Copyright 2019 The Bytecoin developers.
+ * Licensed under the GNU Affero General Public License, version 3.
+ */
+
+.Loading {
+  display: inline-block;
+  position: relative;
+  top: 2px;
+  width: 1rem;
+  height: 1rem;
+}
+
+.Loading div {
+  display: block;
+  position: absolute;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid;
+  border-radius: 50%;
+  animation: rotating 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: #ee4287 transparent transparent transparent;
+}
+
+.Loading div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+
+.Loading div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+
+.Loading div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+
+@keyframes rotating {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

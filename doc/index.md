@@ -1,0 +1,1 @@
+# bytecoin-zero documentation

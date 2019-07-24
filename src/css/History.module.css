@@ -1,0 +1,275 @@
+/*
+ * Copyright 2019 The Bytecoin developers.
+ * Licensed under the GNU Affero General Public License, version 3.
+ */
+
+.history {
+  poistion: relative;
+  z-index: 0;
+  flex-grow: 1;
+}
+
+.historyDay {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.historyDayHeader {
+  display: flex;
+}
+
+.historyDayDate {
+  margin: auto;
+  font-size: small;
+  color: white;
+}
+
+.historyDayDate:first-letter {
+  text-transform: uppercase;
+}
+
+.historyDayRows {
+  display: flex;
+  flex-direction: column;
+}
+
+:global(.history-row-enter), :global(.history-row-appear) {
+  opacity: 0;
+  will-change: opacity;
+}
+
+:global(.history-row-enter-active), :global(.history-row-appear-active) {
+  opacity: 1;
+  transition: opacity 950ms 50ms ease-out;
+}
+
+.tx {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+
+  margin: 1rem 1rem 0;
+}
+
+.txBody {
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+
+  position: relative;
+  z-index: 2;
+  box-shadow: var(--big-shadow);
+  background-color: white;
+
+  border-radius: 0.5rem;
+}
+
+.txBody:global(.expanded),
+.txBody:global(.details-animating) {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.transfer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.25rem 1rem;
+}
+
+.transferLeft {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.transferRight {
+  padding-left: 0.5rem;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.transferKind {
+  margin-right: 0.5rem;
+  border-bottom: thin solid var(--color-muted);
+}
+
+.transferKind > svg {
+  height: 0.75rem;
+  width: 0.75rem;
+  fill: var(--color-text);
+}
+
+.transferDetails {
+  display: flex;
+  overflow: hidden;
+  align-items: center;
+}
+
+.transferIcon {
+}
+
+.transferDescription {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+
+  margin-left: 0.5rem;
+  overflow: hidden;
+}
+
+.transferAddress {
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  font-size: small;
+}
+
+.transferAddressOurs {
+  font-family: var(--emoji-fonts);
+}
+
+.transferHelp {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: x-small;
+  color: var(--color-muted);
+}
+
+.transferMessage {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: small;
+  font-weight: bold;
+}
+
+.transferUnlockTime {
+  font-size: x-small;
+  color: var(--color-muted);
+  word-break: break-word;
+  white-space: normal;
+  text-align: right;
+}
+
+.transferAmount {
+}
+
+.tx:global(.Receive) .txBody .transferAmount {
+  color: var(--color-success);
+}
+
+.tx:global(.Send) .txBody .transferAmount {
+}
+
+.tx:global(.Redistribute) .txBody .transferAmount {
+  color: var(--color-muted);
+}
+
+.txBody .transferAmount:global(.Locked) {
+  color: var(--color-muted) !important;
+}
+
+.unlockedTransferContainer .transferAmount:global(.Unlocked) {
+  color: var(--color-success);
+}
+
+.transferAmountLocked {
+  font-family: var(--emoji-fonts);
+}
+
+.transferAmountUnlocked {
+  font-family: var(--emoji-fonts);
+}
+
+.transferUnconfirmed {
+  font-family: var(--emoji-fonts);
+}
+
+.transferSendproof {
+  font-size: small;
+}
+
+.visualAddressIcon {
+  height: 3rem;
+  width: 3rem;
+  padding: 0.25rem;
+}
+
+.txDetails {
+  position: relative;
+  z-index: 1;
+  box-shadow: var(--big-shadow);
+  background-color: var(--color-light);
+
+  border-bottom-left-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+}
+
+:global(.history-tx-details-enter) {
+  transform: scaleY(0);
+  transform-origin: top;
+  will-change: transform;
+}
+
+:global(.history-tx-details-enter-active) {
+  transform: scaleY(1);
+  transition: transform 300ms 0ms ease-out;
+}
+
+:global(.history-tx-details-exit) {
+  transform: scaleY(1);
+  transform-origin: top;
+  will-change: transform;
+}
+
+:global(.history-tx-details-exit-active) {
+  transform: scaleY(0);
+  transition: transform 300ms 0ms ease-out;
+}
+
+.txDetails .transferAmount {
+  font-size: small;
+}
+
+.txDetails .transferAddress {
+  font-size: x-small;
+  white-space: normal;
+  word-break: break-all;
+}
+
+.txDetails .visualAddressIcon {
+}
+
+.txMetadata {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 1rem;
+  height: 3rem;
+}
+
+.txBlockTime {
+}
+
+.txHash {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 1.5rem;
+}
+
+.txFee {
+  font-size: small;
+  color: var(--color-muted);
+}
+
+.unlockedTransferContainer {
+  margin: 1rem 1rem 0;
+  border-radius: 0.5rem;
+
+  position: relative;
+  z-index: 2;
+  box-shadow: var(--big-shadow);
+  background-color: var(--color-light);
+}

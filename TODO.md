@@ -1,0 +1,22 @@
+# TODO
+
+- proper `uint64` API support
+- make something sensible when several tabs are open at once
+- basic offline support
+- display USD equivalent for all BCN amounts
+- animate every UI change (with proper easing)
+- show exact amounts in UI when possible
+- allow to enter exact amount for sending
+- all tap targets at least 48x48 px
+- view-only wallets support (including the ones which do not see the addresses)
+- try to prevent text selection on expand/collapse fake double-clicks
+- status height change to confirmed height?
+- line-height (1.5rem) layout/grid scale
+- group detailed transfers by kind
+- do not sleep during sync
+- BCN123 in english locale
+- explicitly indicate external links
+- fork gridy-avatars
+- more visible difference between transactions you can expand and e.g. unlocks you can not
+- settings link which includes BCN logo
+- manifest.json for Safari

@@ -1,0 +1,192 @@
+/*
+ * Copyright 2019 The Bytecoin developers.
+ * Licensed under the GNU Affero General Public License, version 3.
+ */
+
+.status {
+  display: flex;
+  padding: 1rem;
+}
+
+.statusIcon {
+  margin-top: -1px;
+  margin-right: 0.5rem;
+}
+
+.statusIcon img {
+  width: 1rem;
+}
+
+.syncStatusSummary {
+  flex-grow: 1;
+  display: flex;
+  justify-content: space-between;
+  color: white;
+}
+
+.syncStatus {
+}
+
+.settings {
+  color: white !important;
+  text-decoration: underline !important;
+  text-decoration-style: dashed !important;
+}
+
+.syncStatusBlock a {
+  color: white;
+  text-decoration: underline;
+}
+
+.syncStatusTimestamp:before {
+  content: "(";
+}
+
+.syncStatusTimestamp:after {
+  content: ")";
+}
+
+.syncStatusError {
+  font-weight: bold;
+}
+
+.ellipsis:after {
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: bottom;
+  animation: ellipsis steps(4,end) 900ms infinite;
+  content: "\2026";
+  width: 0;
+}
+
+@keyframes ellipsis {
+  to {
+    width: 1em;
+  }
+}
+
+.balanceControls {
+  z-index: 100;
+  position: sticky;
+  top: 0;
+
+  margin: 0 1rem;
+}
+
+.main {
+  position: relative;
+  z-index: 102;
+
+  padding: 1rem;
+  background-color: white;
+  box-shadow: var(--big-shadow);
+
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.main svg {
+  height: 0.75rem;
+  width: 0.75rem;
+  fill: var(--color-text);
+
+  margin-right: 0.5rem;
+  vertical-align: baseline;
+}
+
+.balance {
+  flex: 1 100%;
+}
+.recv {
+  flex: 1 auto;
+  margin-top: 1rem;
+}
+.send {
+  flex: 1 auto;
+  margin-top: 1rem;
+}
+
+@media (min-width: 576px) {
+  .recv {
+    order: 1;
+    flex: 1 0;
+    margin: 0;
+  }
+  .balance {
+    order: 2;
+    flex: 2 0;
+  }
+  .send {
+    order: 3;
+    flex: 1 0;
+    margin: 0;
+  }
+}
+
+.balance {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  overflow: hidden;
+}
+
+.balanceAvailable {
+  font-size: x-large;
+}
+
+.balancePending {
+  color: var(--color-muted);
+  font-size: small;
+}
+
+.settingsIcon {
+  font-family: var(--emoji-fonts);
+}
+
+.recv {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.send {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.settingsButton {
+  font-size: small;
+}
+
+.drawer {
+  position: relative;
+  z-index: 101;
+
+  box-shadow: var(--big-shadow);
+  background-color: var(--color-light);
+
+  padding: 1rem;
+}
+
+:global(.balance-send-form-enter) {
+  transform: scaleY(0);
+  transform-origin: top;
+  will-change: transform;
+}
+
+:global(.balance-send-form-enter-active) {
+  transform: scaleY(1);
+  transition: transform 300ms 0ms ease-out;
+}
+
+:global(.balance-send-form-exit) {
+  transform: scaleY(1);
+  transform-origin: top;
+  will-change: transform;
+}
+
+:global(.balance-send-form-exit-active) {
+  transform: scaleY(0);
+  transition: transform 300ms 0ms ease-out;
+}
