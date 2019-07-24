@@ -42,7 +42,7 @@ const App = React.memo(() => {
         <History history={history}/>
 
         <div className={styles.footer}>
-          © 2019 The Bytecoin developers · <a href='https://github.com/bcndev/bytecoin-zero/blob/master/bcnz/doc/index.md' target='_blank' rel='noreferrer noopener'>Documentation</a>
+          © 2019 The Bytecoin developers · <a href='https://github.com/bcndev/bytecoin-zero/blob/master/doc/index.md' target='_blank' rel='noreferrer noopener'>Documentation</a>
         </div>
         <div className={styles.warning}>
           Unstable development version. For testing only.
