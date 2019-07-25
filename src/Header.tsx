@@ -70,7 +70,7 @@ export const BalanceControls = React.memo((props: loop.IStatus & loop.IBalance) 
             {util.formatBCN(props.spendable)}
           </div>
           <div className={styles.balancePending}>
-            {!syncing && props.lockedOrUnconfirmed > 0 && `${util.formatBCN(props.lockedOrUnconfirmed)} pending`}
+            {!syncing && props.lockedOrUnconfirmed > 0 && `${util.formatBCN(props.lockedOrUnconfirmed)} locked or unconfirmed`}
           </div>
         </div>
         <div className={styles.recv} hidden={initializing}>
