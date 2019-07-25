@@ -106,7 +106,13 @@ export async function start(
 syncLoop:
     while (height >= 0) {
       lastStatusTime = await util.delay(MAX_STATUS_DELAY_MS, lastStatusTime);
-      const status = await instance.getStatus(lastStatusReq);
+
+      const [status, errStatus] = await util.try_(instance.getStatus(lastStatusReq));
+      if (status === undefined) {
+        console.warn('failed to get status', lastStatusReq, errStatus);
+        continue;
+      }
+
       lastStatusReq = {
         top_block_hash: status.top_block_hash,
         transaction_pool_version: status.transaction_pool_version,
@@ -124,9 +130,9 @@ syncLoop:
       const req = {
         height_or_depth: CONFIRMED_DEPTH, // do not use confirmedHeight() here to avoid an error during fast sync
       };
-      const [balance, err] = await util.try_(instance.getBalance(req));
+      const [balance, errBalance] = await util.try_(instance.getBalance(req));
       if (balance === undefined) {
-        console.warn('failed to get balance', req, err);
+        console.warn('failed to get balance', req, errBalance);
         continue;
       }
       setBalance({
