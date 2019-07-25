@@ -161,7 +161,7 @@ const Transfer = React.memo((props: loop.ITransfer & {unconfirmed?: boolean, gen
         </div>
         <div className={styles.transferDetails}>
           <div className={styles.transferIcon}>
-            <VisualAddress address={props.address}/>
+            <AddressIcon address={props.address}/>
           </div>
           <div className={styles.transferDescription}>
             <div className={styles.transferHelp}>
@@ -203,12 +203,10 @@ const Transfer = React.memo((props: loop.ITransfer & {unconfirmed?: boolean, gen
   );
 });
 
-const VisualAddress = React.memo((props: {address: string}) => {
+const AddressIcon = React.memo((props: {address: string}) => {
   return (
-    <div className={styles.visualAddress} title={props.address}>
-      <div className={styles.visualAddressIcon}>
-        <Avatar message={props.address}/>
-      </div>
+    <div className={styles.addressIcon} title={props.address}>
+      <Avatar message={props.address}/>
     </div>
   );
 });

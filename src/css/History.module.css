@@ -191,7 +191,7 @@
   font-size: small;
 }
 
-.visualAddressIcon {
+.addressIcon {
   height: 3rem;
   width: 3rem;
   padding: 0.25rem;
@@ -239,7 +239,7 @@
   word-break: break-all;
 }
 
-.txDetails .visualAddressIcon {
+.txDetails .addressIcon {
 }
 
 .txMetadata {
