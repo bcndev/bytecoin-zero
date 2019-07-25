@@ -7,6 +7,7 @@ import * as loop from './lib/loop';
 import * as util from './lib/util';
 import {ReactComponent as ArrowNE} from './img/Arrow_northeast.svg';
 import {ReactComponent as ArrowSE} from './img/Arrow_southeast.svg';
+import ReceiveForm from './ReceiveForm';
 import SendForm from './SendForm';
 import logo from './img/logo.svg';
 import styles from './css/Header.module.css';
@@ -61,6 +62,25 @@ export const Controls = React.memo((props: loop.IStatus & loop.IBalance & {addre
   const syncing = props.topBlockHeight !== props.topKnownBlockHeight;
 
   const [drawerType, setDrawerType] = useState(DrawerType.None);
+  const [nextDrawerType, setNextDrawerType] = useState(DrawerType.None);
+
+  const transitionDrawer = (t: DrawerType) => {
+    if (drawerType === DrawerType.None) {
+      setDrawerType(t);
+    } else if (drawerType === t) {
+      setDrawerType(DrawerType.None);
+    } else {
+      setDrawerType(DrawerType.None);
+      setNextDrawerType(t);
+    }
+  };
+
+  const transitionNextDrawer = () => {
+    if (nextDrawerType !== DrawerType.None) {
+      setDrawerType(nextDrawerType);
+      setNextDrawerType(DrawerType.None);
+    }
+  };
 
   return (
     <div className={styles.controls}>
@@ -74,17 +94,22 @@ export const Controls = React.memo((props: loop.IStatus & loop.IBalance & {addre
           </div>
         </div>
         <div className={styles.recv} hidden={initializing}>
-          <button className='link-like' onClick={() => setDrawerType(drawerType === DrawerType.None ? DrawerType.Receive : DrawerType.None)} disabled>
+          <button className='link-like' onClick={() => transitionDrawer(DrawerType.Receive)}>
             <ArrowSE/> Receive
           </button>
         </div>
         <div className={styles.send} hidden={initializing}>
-          <button className='link-like' onClick={() => setDrawerType(drawerType === DrawerType.None ? DrawerType.Send : DrawerType.None)} disabled={syncing}>
+          <button className='link-like' onClick={() => transitionDrawer(DrawerType.Send)} disabled={syncing}>
             <ArrowNE/> Send
           </button>
         </div>
       </div>
-      <CSSTransition in={drawerType === DrawerType.Send} unmountOnExit={true} timeout={300} classNames='balance-send-form'>
+      <CSSTransition in={drawerType === DrawerType.Receive} onExited={transitionNextDrawer} unmountOnExit={true} timeout={300} classNames='balance-drawer-form'>
+        <div className={styles.drawer}>
+          <ReceiveForm addresses={props.addresses} cancel={() => setDrawerType(DrawerType.None)}/>
+        </div>
+      </CSSTransition>
+      <CSSTransition in={drawerType === DrawerType.Send} onExited={transitionNextDrawer} unmountOnExit={true} timeout={300} classNames='balance-drawer-form'>
         <div className={styles.drawer}>
           <SendForm cancel={() => setDrawerType(DrawerType.None)}/>
         </div>

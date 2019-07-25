@@ -1,0 +1,31 @@
+/*
+ * Copyright 2019 The Bytecoin developers.
+ * Licensed under the GNU Affero General Public License, version 3.
+ */
+
+.receiveForm {
+}
+
+.address {
+  display: flex;
+}
+
+.address + .address {
+  margin-top: 1rem;
+}
+
+.addressIcon {
+  flex-shrink: 0;
+  align-self: center;
+  margin-right: 0.5rem;
+
+  height: 3rem;
+  width: 3rem;
+  padding: 0.25rem;
+}
+
+.addressText {
+  font-size: small;
+  white-space: normal;
+  word-break: break-all;
+}

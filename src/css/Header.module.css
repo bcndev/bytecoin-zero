@@ -169,24 +169,24 @@
   padding: 1rem;
 }
 
-:global(.balance-send-form-enter) {
+:global(.balance-drawer-form-enter) {
   transform: scaleY(0);
   transform-origin: top;
   will-change: transform;
 }
 
-:global(.balance-send-form-enter-active) {
+:global(.balance-drawer-form-enter-active) {
   transform: scaleY(1);
   transition: transform 300ms 0ms ease-out;
 }
 
-:global(.balance-send-form-exit) {
+:global(.balance-drawer-form-exit) {
   transform: scaleY(1);
   transform-origin: top;
   will-change: transform;
 }
 
-:global(.balance-send-form-exit-active) {
+:global(.balance-drawer-form-exit-active) {
   transform: scaleY(0);
   transition: transform 300ms 0ms ease-out;
 }
