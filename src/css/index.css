@@ -43,6 +43,10 @@ button.link-like:hover, button.link-like:focus {
   text-decoration: none;
 }
 
+button.link-like:not([tabindex]):focus {
+  outline: 0;
+}
+
 button.link-like:disabled {
   color: var(--color-muted);
   cursor: not-allowed;
