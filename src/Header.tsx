@@ -1,7 +1,7 @@
 // Copyright 2019 The Bytecoin developers.
 // Licensed under the GNU Affero General Public License, version 3.
 
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {CSSTransition} from 'react-transition-group';
 import * as loop from './lib/loop';
 import * as util from './lib/util';
@@ -15,19 +15,7 @@ export const Status = React.memo((props: loop.IStatus) => {
   const initializing = props.topBlockHash === '';
   const syncing = props.topBlockHeight !== props.topKnownBlockHeight;
 
-  const [relTime, setRelTime] = useState(util.formatTimeRelative(props.topBlockTime));
-
-  useEffect(() => {
-    setRelTime(util.formatTimeRelative(props.topBlockTime));
-
-    const handle = setInterval(() => {
-      setRelTime(util.formatTimeRelative(props.topBlockTime));
-    }, 15 * 1000);
-
-    return () => {
-      clearInterval(handle);
-    };
-  }, [props.topBlockTime]);
+  const relTime = util.useRelativeTime(props.topBlockTime);
 
   return (
     <div className={styles.status}>

@@ -1,7 +1,7 @@
 // Copyright 2019 The Bytecoin developers.
 // Licensed under the GNU Affero General Public License, version 3.
 
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {formatDistance} from 'date-fns';
 import * as locales from 'date-fns/locale';
 import * as walletd from './walletd';
@@ -83,8 +83,8 @@ function curLocale() {
   return (locales as any)[localeId] || (locales as any)[shortLocaleId] || locales.enUS;
 }
 
-export function formatTimeRelative(d: Date): string {
-  return formatDistance(d, Date.now(), {
+export function formatTimeRelative(t: Date): string {
+  return formatDistance(t, Date.now(), {
     addSuffix: true,
     locale: curLocale(),
   });
@@ -111,6 +111,24 @@ export function formatBCNDelta(amount: number, frac: number = 2, showSign: boole
   const sign = amount > 0 ? '+' : (amount < 0 ? '−' : '');
 
   return ((!showSign || sign === '') ? '' : (sign + '\u202F')) + formatBCN(Math.abs(amount), frac);
+}
+
+export function useRelativeTime(t: Date, updateInterval: number = 15 * 1000) {
+  const [relTime, setRelTime] = useState(formatTimeRelative(t));
+
+  useEffect(() => {
+    setRelTime(formatTimeRelative(t));
+
+    const handle = setInterval(() => {
+      setRelTime(formatTimeRelative(t));
+    }, updateInterval);
+
+    return () => {
+      clearInterval(handle);
+    };
+  }, [t, updateInterval]);
+
+  return relTime;
 }
 
 export function useScrollIntoView(block: ScrollLogicalPosition) {
