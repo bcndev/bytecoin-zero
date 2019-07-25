@@ -155,8 +155,8 @@
   justify-content: flex-end;
 }
 
-.settingsButton {
-  font-size: small;
+.recv button:global(.active), .send button:global(.active) {
+  font-weight: bold;
 }
 
 .drawer {

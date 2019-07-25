@@ -94,12 +94,12 @@ export const Controls = React.memo((props: loop.IStatus & loop.IBalance & {addre
           </div>
         </div>
         <div className={styles.recv} hidden={initializing}>
-          <button className='link-like' onClick={() => transitionDrawer(DrawerType.Receive)}>
+          <button className={`link-like ${drawerType === DrawerType.Receive ? 'active' : ''}`} onClick={() => transitionDrawer(DrawerType.Receive)}>
             <ArrowSE/> Receive
           </button>
         </div>
         <div className={styles.send} hidden={initializing}>
-          <button className='link-like' onClick={() => transitionDrawer(DrawerType.Send)} disabled={syncing}>
+          <button className={`link-like ${drawerType === DrawerType.Send ? 'active' : ''}`} onClick={() => transitionDrawer(DrawerType.Send)} disabled={syncing}>
             <ArrowNE/> Send
           </button>
         </div>
