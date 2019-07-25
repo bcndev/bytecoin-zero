@@ -10,6 +10,7 @@ import * as loop from './lib/loop';
 // TODO: messages
 // TODO: multiple recipients
 // TODO: custom fee
+// TODO: 'sending' state (biometrics / network latency)
 const SendForm = React.memo((props: {cancel: () => void}) => {
   const wallet = useContext(util.WalletContext);
 
@@ -46,7 +47,7 @@ const SendForm = React.memo((props: {cancel: () => void}) => {
     }));
     if (sendResp === undefined) {
       alert(`Failed to send transaction: ${errSend}`);
-      return
+      return;
     }
 
     props.cancel();
