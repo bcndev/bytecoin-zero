@@ -127,21 +127,6 @@ export function useRelativeTime(t: Date, updateInterval: number = 15 * 1000) {
   return relTime;
 }
 
-export function useScrollIntoView(block: ScrollLogicalPosition) {
-  const element = React.useRef<HTMLDivElement>(null);
-
-  React.useLayoutEffect(() => {
-    if (element.current !== null) {
-      element.current.scrollIntoView({
-        block,
-        behavior: 'smooth',
-      });
-    }
-  }, [block]);
-
-  return element;
-}
-
 export const WalletContext = React.createContext<walletd.Walletd | null>(null);
 
 export async function digest(message: string): Promise<ArrayBuffer> {
