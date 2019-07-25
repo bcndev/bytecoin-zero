@@ -56,14 +56,14 @@ enum DrawerType {
   Send,
 }
 
-export const BalanceControls = React.memo((props: loop.IStatus & loop.IBalance) => {
+export const Controls = React.memo((props: loop.IStatus & loop.IBalance & {addresses: loop.IAddress[]}) => {
   const initializing = props.topBlockHash === '';
   const syncing = props.topBlockHeight !== props.topKnownBlockHeight;
 
   const [drawerType, setDrawerType] = useState(DrawerType.None);
 
   return (
-    <div className={styles.balanceControls}>
+    <div className={styles.controls}>
       <div className={styles.main}>
         <div className={styles.balance}>
           <div className={styles.balanceAvailable}>

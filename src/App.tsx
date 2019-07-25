@@ -5,7 +5,7 @@ import React, {useEffect, useState} from 'react';
 import * as walletd from './lib/walletd';
 import * as loop from './lib/loop';
 import * as util from './lib/util';
-import {Status, BalanceControls} from './Header';
+import {Status, Controls} from './Header';
 import History from './History';
 import styles from './css/App.module.css';
 
@@ -26,7 +26,7 @@ const App = React.memo(() => {
   const [wallet, setWallet] = useState<walletd.Walletd | null>(null);
   const [status, setStatus] = useState<loop.IStatus>(initialStatus);
   const [balance, setBalance] = useState<loop.IBalance>(initialBalance);
-  const [, setAddresses] = useState<loop.IAddress[]>([]); // TODO
+  const [addresses, setAddresses] = useState<loop.IAddress[]>([]);
   const [history, setHistory] = useState<loop.IDay[]>([]);
 
   useEffect(() => {
@@ -37,7 +37,7 @@ const App = React.memo(() => {
     <div className={styles.app}>
       <util.WalletContext.Provider value={wallet}>
         <Status {...status}/>
-        <BalanceControls {...balance} {...status}/>
+        <Controls {...status} {...balance} addresses={addresses}/>
 
         <History history={history}/>
 
