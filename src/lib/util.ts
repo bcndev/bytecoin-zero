@@ -38,10 +38,6 @@ export function groupBy<T, U>(items: T[], keyGetter: (item: T) => U): Map<U, T[]
   return m;
 }
 
-export function unexpectedError(msg: string) {
-  alert(`Unexpected error: ${msg}\n\nPlease try reloading this page.`)
-}
-
 export function delay(ms: number, prev?: number): Promise<number> {
   return new Promise((resolve) => {
     const offset = prev !== undefined ? Date.now() - prev : 0;

@@ -215,7 +215,7 @@ syncLoop:
       }
     }
   } catch (err) {
-    util.unexpectedError(err);
+    alert(`Unexpected error: ${err}\n\nPlease try reloading this page.`);
   } finally {
     await instance.close();
   }

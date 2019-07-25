@@ -50,12 +50,17 @@ export const Status = React.memo((props: loop.IStatus) => {
   );
 });
 
-export const BalanceControls = React.memo((props: loop.IStatus & loop.IBalance) => {
-  const syncing = props.topBlockHeight !== props.topKnownBlockHeight;
-  const initializing = props.topBlockHash === '';
+enum DrawerType {
+  None,
+  Receive,
+  Send,
+}
 
-  const [sending, setSending] = useState(false);
-  const [, setReceiving] = useState(false);
+export const BalanceControls = React.memo((props: loop.IStatus & loop.IBalance) => {
+  const initializing = props.topBlockHash === '';
+  const syncing = props.topBlockHeight !== props.topKnownBlockHeight;
+
+  const [drawerType, setDrawerType] = useState(DrawerType.None);
 
   return (
     <div className={styles.balanceControls}>
@@ -69,19 +74,19 @@ export const BalanceControls = React.memo((props: loop.IStatus & loop.IBalance) 
           </div>
         </div>
         <div className={styles.recv} hidden={initializing}>
-          <button className='link-like' onClick={() => setReceiving(true)} disabled>
+          <button className='link-like' onClick={() => setDrawerType(drawerType === DrawerType.None ? DrawerType.Receive : DrawerType.None)} disabled>
             <ArrowSE/> Receive
           </button>
         </div>
         <div className={styles.send} hidden={initializing}>
-          <button className='link-like' onClick={() => setSending(true)} disabled={sending}>
+          <button className='link-like' onClick={() => setDrawerType(drawerType === DrawerType.None ? DrawerType.Send : DrawerType.None)} disabled={syncing}>
             <ArrowNE/> Send
           </button>
         </div>
       </div>
-      <CSSTransition in={sending} unmountOnExit={true} timeout={300} classNames='balance-send-form'>
+      <CSSTransition in={drawerType === DrawerType.Send} unmountOnExit={true} timeout={300} classNames='balance-send-form'>
         <div className={styles.drawer}>
-          <SendForm cancel={() => setSending(false)}/>
+          <SendForm cancel={() => setDrawerType(DrawerType.None)}/>
         </div>
       </CSSTransition>
     </div>
