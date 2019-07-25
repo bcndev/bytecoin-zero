@@ -33,6 +33,7 @@ importScripts("walletworker.js");
       };
 // 		  console.log("block_respond_fun");
       postMessage(transferObject, [transferObject.data.buffer]);
+      var twoMB = new ArrayBuffer(88608); // trigger GC on some browsers
   };
   let transaction_respond_fun = function(worker_id, work_amount, data, size){
       var transferObject = {
@@ -43,6 +44,7 @@ importScripts("walletworker.js");
       };
 // 		  console.log("transaction_respond_fun");
       postMessage(transferObject, [transferObject.data.buffer]);
+      var twoMB = new ArrayBuffer(88608); // trigger GC on some browsers
   };
 
   onmessage = function onmessage(msg) {
@@ -61,11 +63,19 @@ importScripts("walletworker.js");
 	let func = Module[msg.data.func];
 	if (!func) throw 'invalid worker function to call: ' + msg.data.func;
   let data = msg.data.data;
-  if (!data.byteLength) data = new Uint8Array(data);
+  if (!data.byteLength) {
+    console.log("Wallet Worker strange");
+    data = new Uint8Array(data);
+  }
   if (!buffer || bufferSize < data.length) {
-    if (buffer) Module._free(buffer);
+    if (buffer) {
+//       console.log("Wallet Worker free", buffer, bufferSize);
+      Module._free(buffer);
+    }
+    buffer = null;
     buffer = Module._malloc(data.length);
     bufferSize = data.length;
+//     console.log("Wallet Worker malloc", buffer, bufferSize);
   }
   Module.HEAPU8.set(data, buffer);
 
