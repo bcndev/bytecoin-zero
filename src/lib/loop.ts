@@ -111,6 +111,8 @@ syncLoop:
       if (status === undefined) {
         console.warn('failed to get status', lastStatusReq, errStatus);
         continue;
+      } else if (status.top_known_block_height === 0) {
+        continue;
       }
 
       lastStatusReq = {
