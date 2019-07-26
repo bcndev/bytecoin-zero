@@ -1,7 +1,7 @@
 // Copyright 2019 The Bytecoin developers.
 // Licensed under the GNU Affero General Public License, version 3.
 
-import React, {useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {CSSTransition} from 'react-transition-group';
 import * as loop from './lib/loop';
 import * as util from './lib/util';
@@ -11,6 +11,9 @@ import ReceiveForm from './ReceiveForm';
 import SendForm from './SendForm';
 import logo from './img/logo.svg';
 import styles from './css/Header.module.css';
+
+// @ts-ignore
+import NoSleep from 'nosleep.js';
 
 export const Status = React.memo((props: loop.IStatus) => {
   const initializing = props.topBlockHash === '';
@@ -60,9 +63,27 @@ enum DrawerType {
 export const Controls = React.memo((props: loop.IStatus & loop.IBalance & {addresses: loop.IAddress[]}) => {
   const initializing = props.topBlockHash === '';
   const syncing = props.topBlockHeight !== props.topKnownBlockHeight;
+  const showNoSleep = syncing && util.isMobile();
 
+  const noSleep = useRef(new NoSleep());
   const [drawerType, setDrawerType] = useState(DrawerType.None);
   const [nextDrawerType, setNextDrawerType] = useState(DrawerType.None);
+
+  useEffect(() => {
+    if (!showNoSleep) {
+      turnNoSleep(false);
+    }
+  }, [showNoSleep]);
+
+  const turnNoSleep = (on: boolean) => {
+    console.info(`no sleep: ${on}`);
+
+    if (on) {
+      noSleep.current.enable();
+    } else {
+      noSleep.current.disable();
+    }
+  };
 
   const transitionDrawer = (t: DrawerType) => {
     if (drawerType === DrawerType.None) {
@@ -84,6 +105,11 @@ export const Controls = React.memo((props: loop.IStatus & loop.IBalance & {addre
 
   return (
     <div className={styles.controls}>
+      <CSSTransition in={showNoSleep} unmountOnExit={true} timeout={300} classNames='balance-drawer-form-up'>
+        <div className={`${styles.drawer} ${styles.noSleep}`}>
+          <input type='checkbox' id='noSleep' onChange={(e) => turnNoSleep(e.target.checked)}/> <label htmlFor='noSleep'>Prevent device sleep during sync</label>
+        </div>
+      </CSSTransition>
       <div className={styles.main}>
         <div className={styles.balance}>
           <div className={styles.balanceAvailable}>
@@ -104,12 +130,12 @@ export const Controls = React.memo((props: loop.IStatus & loop.IBalance & {addre
           </button>
         </div>
       </div>
-      <CSSTransition in={drawerType === DrawerType.Receive} onExited={transitionNextDrawer} unmountOnExit={true} timeout={300} classNames='balance-drawer-form'>
+      <CSSTransition in={drawerType === DrawerType.Receive} onExited={transitionNextDrawer} unmountOnExit={true} timeout={300} classNames='balance-drawer-form-down'>
         <div className={styles.drawer}>
           <ReceiveForm addresses={props.addresses} cancel={() => setDrawerType(DrawerType.None)}/>
         </div>
       </CSSTransition>
-      <CSSTransition in={drawerType === DrawerType.Send} onExited={transitionNextDrawer} unmountOnExit={true} timeout={300} classNames='balance-drawer-form'>
+      <CSSTransition in={drawerType === DrawerType.Send} onExited={transitionNextDrawer} unmountOnExit={true} timeout={300} classNames='balance-drawer-form-down'>
         <div className={styles.drawer}>
           <SendForm cancel={() => setDrawerType(DrawerType.None)}/>
         </div>
