@@ -60,10 +60,13 @@ enum DrawerType {
   Send,
 }
 
+const dayMS = 60 * 60 * 24 * 1000;
+
 export const Controls = React.memo((props: loop.IStatus & loop.IBalance & {addresses: loop.IAddress[]}) => {
   const initializing = props.topBlockHash === '';
   const syncing = props.topBlockHeight !== props.topKnownBlockHeight;
-  const showNoSleep = syncing && util.isMobile();
+  const farBehind = (new Date()).valueOf() - props.topBlockTime.valueOf() > 2 * dayMS;
+  const showNoSleep = syncing && farBehind && util.isMobile();
 
   const noSleep = useRef(new NoSleep());
   const [drawerType, setDrawerType] = useState(DrawerType.None);
