@@ -7,6 +7,11 @@ import * as loop from './lib/loop';
 import Avatar from './Avatar';
 
 const ReceiveForm = React.memo((props: {addresses: loop.IAddress[], cancel: () => void}) => {
+  const navShare = (navigator as any).share;
+  const share = (addr: string) => navShare({
+    text: addr,
+  });
+
   return (
     <div className={styles.receiveForm}>
       {
@@ -16,8 +21,15 @@ const ReceiveForm = React.memo((props: {addresses: loop.IAddress[], cancel: () =
               <Avatar message={addr.address}/>
             </div>
             <div className={styles.addressText}>
-              {addr.address}
+              <span className={styles.addressOurs} role='img' aria-label='wallet address'>&#128091;</span> {addr.address}
             </div>
+            { navShare !== undefined &&
+              <div className={styles.share}>
+                <button className='link-like' onClick={() => share(addr.address)}>
+                  Share
+                </button>
+              </div>
+            }
           </div>
         )
       }

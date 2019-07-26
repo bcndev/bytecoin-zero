@@ -24,8 +24,18 @@
   padding: 0.25rem;
 }
 
+.addressOurs {
+  font-family: var(--emoji-fonts);
+}
+
 .addressText {
   font-size: small;
   white-space: normal;
   word-break: break-all;
+}
+
+.share {
+  display: flex;
+  align-items: center;
+  margin-left: 0.5rem;
 }
