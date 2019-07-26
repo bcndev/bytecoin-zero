@@ -13,7 +13,6 @@
 - status height change to confirmed height?
 - line-height (1.5rem) layout/grid scale
 - group detailed transfers by kind
-- do not sleep during sync
 - BCN123 in english locale
 - explicitly indicate external links
 - fork gridy-avatars
