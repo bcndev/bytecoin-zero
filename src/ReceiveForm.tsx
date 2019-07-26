@@ -20,8 +20,10 @@ const ReceiveForm = React.memo((props: {addresses: loop.IAddress[], cancel: () =
             <div className={styles.addressIcon} title={addr.address}>
               <Avatar message={addr.address}/>
             </div>
-            <div className={styles.addressText}>
-              <span className={styles.addressOurs} role='img' aria-label='wallet address'>&#128091;</span> {addr.address}
+            <div className={styles.addressData}>
+              <div className={styles.addressText}>
+                <span className={styles.addressOurs} role='img' aria-label='wallet address'>&#128091;</span> {addr.address}
+              </div>
             </div>
             { navShare !== undefined &&
               <div className={styles.share}>

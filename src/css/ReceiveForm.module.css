@@ -28,6 +28,11 @@
   font-family: var(--emoji-fonts);
 }
 
+.addressData {
+  display: flex;
+  align-items: center;
+}
+
 .addressText {
   font-size: small;
   white-space: normal;
