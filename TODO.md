@@ -19,3 +19,4 @@
 - more visible difference between transactions you can expand and e.g. unlocks you can not
 - settings link which includes BCN logo
 - manifest.json for Safari
+- include precise version info in UI
