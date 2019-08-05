@@ -55,37 +55,39 @@ const SendForm = React.memo((props: {dismiss: () => void}) => {
 
   return (
     <div className={styles.sendForm}>
-      <div className={styles.addressGroup}>
-        <label htmlFor='toAddress'>Address</label>
-        <input className={`${addressValid ? 'valid' : 'invalid'}`}
-               type='text'
-               id='toAddress'
-               onChange={(e) => {
-                 const addr = e.target.value;
-                 const ok = checkAddress(addr);
-                 setAddressValid(ok);
-                 if (ok) {
-                   setAddress(addr);
-                 }
-               }}
-        />
-      </div>
-      <div className={styles.amountGroup}>
-        <label htmlFor='toAmount'>Amount</label>
-        <input className={`${amountValid ? 'valid' : 'invalid'}`}
-               type='number'
-               id='toAmount'
-               min='0.01'
-               step='0.01'
-               onChange={(e) => {
-                 const am = Math.round(parseFloat(e.target.value) * 1e8); // TODO: exact calculation
-                 const ok = am > 0; // TODO: check upper bound
-                 setAmountValid(ok);
-                 if (ok) {
-                   setAmount(am);
-                 }
-               }}
-        />
+      <div className={styles.transfer}>
+        <div className={styles.addressGroup}>
+          <label htmlFor='toAddress'>Address</label>
+          <input className={`${addressValid ? 'valid' : 'invalid'}`}
+                 type='text'
+                 id='toAddress'
+                 onChange={(e) => {
+                   const addr = e.target.value;
+                   const ok = checkAddress(addr);
+                   setAddressValid(ok);
+                   if (ok) {
+                     setAddress(addr);
+                   }
+                 }}
+          />
+        </div>
+        <div className={styles.amountGroup}>
+          <label htmlFor='toAmount'>Amount</label>
+          <input className={`${amountValid ? 'valid' : 'invalid'}`}
+                 type='number'
+                 id='toAmount'
+                 min='0.01'
+                 step='0.01'
+                 onChange={(e) => {
+                   const am = Math.round(parseFloat(e.target.value) * 1e8); // TODO: exact calculation
+                   const ok = am > 0; // TODO: check upper bound
+                   setAmountValid(ok);
+                   if (ok) {
+                     setAmount(am);
+                   }
+                 }}
+          />
+        </div>
       </div>
       <div className={styles.controls}>
         <button className={styles.cancelButton} onClick={props.dismiss}>

@@ -25,6 +25,10 @@
   color: var(--color-danger);
 }
 
+.transfer {
+  margin-bottom: 1rem;
+}
+
 .addressGroup, .amountGroup {
   display: flex;
   align-items: baseline;
