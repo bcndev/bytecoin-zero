@@ -19,11 +19,10 @@
 }
 
 .sendForm input:global(.valid) {
-  background-color: var(--color-success-light);
 }
 
 .sendForm input:global(.invalid) {
-  background-color: var(--color-danger-light);
+  color: var(--color-danger);
 }
 
 .addressGroup, .amountGroup {
