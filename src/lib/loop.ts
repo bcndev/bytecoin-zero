@@ -230,7 +230,7 @@ syncLoop:
 }
 
 const DEFAULT_MNEMONIC = 'autumn actor sleep rebel fee scissors garage try claim miss maple ribbon alarm size above kite mass gain render grow dice decrease subway calm';
-const DEFAULT_BYTECOIND_ADDR = 'https://node03.bytecoin.org:8091';
+const DEFAULT_BYTECOIND_ADDR = 'https://node02.bytecoin.org:8091';
 
 const MAX_STATUS_DELAY_MS = 100;
 

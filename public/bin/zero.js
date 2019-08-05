@@ -1272,11 +1272,11 @@ function updateGlobalBufferViews() {
 
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 121664,
+    STACK_BASE = 122448,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 5364544,
-    DYNAMIC_BASE = 5364544,
-    DYNAMICTOP_PTR = 121632;
+    STACK_MAX = 5365328,
+    DYNAMIC_BASE = 5365328,
+    DYNAMICTOP_PTR = 122416;
 
 assert(STACK_BASE % 16 === 0, 'stack must start aligned');
 assert(DYNAMIC_BASE % 16 === 0, 'heap must start aligned');
@@ -1781,16 +1781,26 @@ var tempI64;
 
 // === Body ===
 
-var ASM_CONSTS = [function() { let arr = new Uint8Array(1); if (typeof window === 'object') window.crypto.getRandomValues(arr); else self.crypto.getRandomValues(arr); return arr[0]; }];
+var ASM_CONSTS = [function() { let arr = new Uint8Array(1); if (typeof window === 'object') window.crypto.getRandomValues(arr); else self.crypto.getRandomValues(arr); return arr[0]; },
+ function($0, $1, $2, $3, $4, $5, $6, $7, $8, $9) { return Module.cn_fetch($0, $1, $2, $3, $4, $5, $6, $7, $8, $9); },
+ function($0) { Module.cn_fetch_cancel($0); }];
+
+function _emscripten_asm_const_ii(code, a0) {
+  return ASM_CONSTS[code](a0);
+}
 
 function _emscripten_asm_const_i(code) {
   return ASM_CONSTS[code]();
 }
 
+function _emscripten_asm_const_iiiiiiiiiii(code, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9) {
+  return ASM_CONSTS[code](a0, a1, a2, a3, a4, a5, a6, a7, a8, a9);
+}
 
 
 
-// STATICTOP = STATIC_BASE + 120640;
+
+// STATICTOP = STATIC_BASE + 121424;
 /* global initializers */  __ATINIT__.push({ func: function() { globalCtors() } });
 
 
@@ -1801,7 +1811,7 @@ function _emscripten_asm_const_i(code) {
 
 
 /* no memory initializer */
-var tempDoublePtr = 121648
+var tempDoublePtr = 122432
 assert(tempDoublePtr % 8 == 0);
 
 function copyTempFloat(ptr) { // functions, because inlining this code increases code size too much
@@ -1988,7 +1998,7 @@ function copyTempDouble(ptr) {
   
       var pointer = ___cxa_is_pointer_type(throwntype);
       // can_catch receives a **, add indirection
-      var buffer = 121616;
+      var buffer = 122400;
       HEAP32[((buffer)>>2)]=thrown;
       thrown = buffer;
       // The different catch blocks are denoted by different types.
@@ -3166,18 +3176,6 @@ function copyTempDouble(ptr) {
     }
 
   var _emscripten_asm_const_int=true;
-
-  function _emscripten_fetch() {
-  err('missing function: emscripten_fetch'); abort(-1);
-  }
-
-  function _emscripten_fetch_attr_init() {
-  err('missing function: emscripten_fetch_attr_init'); abort(-1);
-  }
-
-  function _emscripten_fetch_close() {
-  err('missing function: emscripten_fetch_close'); abort(-1);
-  }
 
   function _emscripten_get_heap_size() {
       return HEAP8.length;
@@ -4512,9 +4510,8 @@ var asmLibraryArg = {
   "_abort": _abort,
   "_embind_repr": _embind_repr,
   "_emscripten_asm_const_i": _emscripten_asm_const_i,
-  "_emscripten_fetch": _emscripten_fetch,
-  "_emscripten_fetch_attr_init": _emscripten_fetch_attr_init,
-  "_emscripten_fetch_close": _emscripten_fetch_close,
+  "_emscripten_asm_const_ii": _emscripten_asm_const_ii,
+  "_emscripten_asm_const_iiiiiiiiiii": _emscripten_asm_const_iiiiiiiiiii,
   "_emscripten_get_heap_size": _emscripten_get_heap_size,
   "_emscripten_memcpy_big": _emscripten_memcpy_big,
   "_emscripten_resize_heap": _emscripten_resize_heap,
