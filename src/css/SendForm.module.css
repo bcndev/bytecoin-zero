@@ -6,11 +6,55 @@
 .sendForm {
 }
 
-.addressGroup {
+.sendForm input {
+  font-family: var(--monospace-fonts);
+  padding-left: 0.25rem;
 }
 
-.amountGroup {
+.sendForm label {
+  width: 5rem;
+  text-align: right;
+  margin-bottom: 0;
+  padding-right: 0.5rem;
+}
+
+.sendForm input:global(.valid) {
+  background-color: var(--color-success-light);
+}
+
+.sendForm input:global(.invalid) {
+  background-color: var(--color-danger-light);
+}
+
+.addressGroup, .amountGroup {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 0.5rem;
+}
+
+.addressGroup input {
+  flex-grow: 1;
+  min-width: 10ch;
+  max-width: 100ch;
+}
+
+.amountGroup input {
+  flex-grow: 1;
+  min-width: 10ch;
+  max-width: 20ch;
 }
 
 .controls {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.cancelButton {
+  color: var(--color-danger);
+  padding: 0 0.5rem;
+  margin-right: 1rem;
+}
+
+.sendButton {
+  padding: 0 0.5rem;
 }

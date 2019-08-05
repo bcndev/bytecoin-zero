@@ -57,9 +57,9 @@ const SendForm = React.memo((props: {dismiss: () => void}) => {
     <div className={styles.sendForm}>
       <div className={styles.addressGroup}>
         <label htmlFor='toAddress'>Address</label>
-        <input type='text'
+        <input className={`${addressValid ? 'valid' : 'invalid'}`}
+               type='text'
                id='toAddress'
-               placeholder='Bytecoin address'
                onChange={(e) => {
                  const addr = e.target.value;
                  const ok = checkAddress(addr);
@@ -72,7 +72,8 @@ const SendForm = React.memo((props: {dismiss: () => void}) => {
       </div>
       <div className={styles.amountGroup}>
         <label htmlFor='toAmount'>Amount</label>
-        <input type='number'
+        <input className={`${amountValid ? 'valid' : 'invalid'}`}
+               type='number'
                id='toAmount'
                min='0.01'
                step='0.01'
@@ -87,10 +88,10 @@ const SendForm = React.memo((props: {dismiss: () => void}) => {
         />
       </div>
       <div className={styles.controls}>
-        <button onClick={props.dismiss}>
+        <button className={styles.cancelButton} onClick={props.dismiss}>
           Cancel
         </button>
-        <button onClick={send} disabled={!addressValid || !amountValid}>
+        <button className={styles.sendButton} onClick={send} disabled={!addressValid || !amountValid}>
           Send
         </button>
       </div>
