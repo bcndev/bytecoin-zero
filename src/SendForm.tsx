@@ -60,6 +60,7 @@ const SendForm = React.memo((props: {dismiss: () => void}) => {
           <label htmlFor='toAddress'>Address</label>
           <input className={`${addressValid ? 'valid' : 'invalid'}`}
                  type='text'
+                 placeholder='bcnZ… or 2…'
                  id='toAddress'
                  onChange={(e) => {
                    const addr = e.target.value;
@@ -75,6 +76,7 @@ const SendForm = React.memo((props: {dismiss: () => void}) => {
           <label htmlFor='toAmount'>Amount</label>
           <input className={`${amountValid ? 'valid' : 'invalid'}`}
                  type='number'
+                 placeholder='0'
                  id='toAmount'
                  min='0.01'
                  step='0.01'
