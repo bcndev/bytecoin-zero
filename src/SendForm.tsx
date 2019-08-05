@@ -11,7 +11,7 @@ import * as loop from './lib/loop';
 // TODO: multiple recipients
 // TODO: custom fee
 // TODO: 'sending' state (biometrics / network latency)
-const SendForm = React.memo((props: {cancel: () => void}) => {
+const SendForm = React.memo((props: {dismiss: () => void}) => {
   const wallet = useContext(util.WalletContext);
 
   const [address, setAddress] = useState('');
@@ -50,7 +50,7 @@ const SendForm = React.memo((props: {cancel: () => void}) => {
       return;
     }
 
-    props.cancel();
+    props.dismiss();
   };
 
   return (
@@ -77,7 +77,7 @@ const SendForm = React.memo((props: {cancel: () => void}) => {
                min='0.01'
                step='0.01'
                onChange={(e) => {
-                 const am = parseFloat(e.target.value) * 1e8;
+                 const am = Math.round(parseFloat(e.target.value) * 1e8); // TODO: exact calculation
                  const ok = am > 0; // TODO: check upper bound
                  setAmountValid(ok);
                  if (ok) {
@@ -87,7 +87,7 @@ const SendForm = React.memo((props: {cancel: () => void}) => {
         />
       </div>
       <div className={styles.controls}>
-        <button onClick={props.cancel}>
+        <button onClick={props.dismiss}>
           Cancel
         </button>
         <button onClick={send} disabled={!addressValid || !amountValid}>

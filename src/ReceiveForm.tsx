@@ -6,7 +6,7 @@ import styles from './css/ReceiveForm.module.css';
 import * as loop from './lib/loop';
 import Avatar from './Avatar';
 
-const ReceiveForm = React.memo((props: {addresses: loop.IAddress[], cancel: () => void}) => {
+const ReceiveForm = React.memo((props: {addresses: loop.IAddress[], dismiss: () => void}) => {
   const canShare = (navigator as any).share !== undefined;
   const share = (addr: string) => {
     (navigator as any).share({

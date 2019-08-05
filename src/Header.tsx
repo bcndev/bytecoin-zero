@@ -135,12 +135,12 @@ export const Controls = React.memo((props: loop.IStatus & loop.IBalance & {addre
       </div>
       <CSSTransition in={drawerType === DrawerType.Receive} onExited={transitionNextDrawer} unmountOnExit={true} timeout={300} classNames='balance-drawer-form-down'>
         <div className={styles.drawer}>
-          <ReceiveForm addresses={props.addresses} cancel={() => setDrawerType(DrawerType.None)}/>
+          <ReceiveForm addresses={props.addresses} dismiss={() => setDrawerType(DrawerType.None)}/>
         </div>
       </CSSTransition>
       <CSSTransition in={drawerType === DrawerType.Send} onExited={transitionNextDrawer} unmountOnExit={true} timeout={300} classNames='balance-drawer-form-down'>
         <div className={styles.drawer}>
-          <SendForm cancel={() => setDrawerType(DrawerType.None)}/>
+          <SendForm dismiss={() => setDrawerType(DrawerType.None)}/>
         </div>
       </CSSTransition>
     </div>
