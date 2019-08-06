@@ -1272,11 +1272,11 @@ function updateGlobalBufferViews() {
 
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 122448,
+    STACK_BASE = 122736,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 5365328,
-    DYNAMIC_BASE = 5365328,
-    DYNAMICTOP_PTR = 122416;
+    STACK_MAX = 5365616,
+    DYNAMIC_BASE = 5365616,
+    DYNAMICTOP_PTR = 122704;
 
 assert(STACK_BASE % 16 === 0, 'stack must start aligned');
 assert(DYNAMIC_BASE % 16 === 0, 'heap must start aligned');
@@ -1800,7 +1800,7 @@ function _emscripten_asm_const_iiiiiiiiiii(code, a0, a1, a2, a3, a4, a5, a6, a7,
 
 
 
-// STATICTOP = STATIC_BASE + 121424;
+// STATICTOP = STATIC_BASE + 121712;
 /* global initializers */  __ATINIT__.push({ func: function() { globalCtors() } });
 
 
@@ -1811,7 +1811,7 @@ function _emscripten_asm_const_iiiiiiiiiii(code, a0, a1, a2, a3, a4, a5, a6, a7,
 
 
 /* no memory initializer */
-var tempDoublePtr = 122432
+var tempDoublePtr = 122720
 assert(tempDoublePtr % 8 == 0);
 
 function copyTempFloat(ptr) { // functions, because inlining this code increases code size too much
@@ -1998,7 +1998,7 @@ function copyTempDouble(ptr) {
   
       var pointer = ___cxa_is_pointer_type(throwntype);
       // can_catch receives a **, add indirection
-      var buffer = 122400;
+      var buffer = 122688;
       HEAP32[((buffer)>>2)]=thrown;
       thrown = buffer;
       // The different catch blocks are denoted by different types.
