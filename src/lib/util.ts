@@ -199,7 +199,6 @@ export async function bioApprove(rpName: string, userName: string, userDisplayNa
       }],
       authenticatorSelection: {
         authenticatorAttachment: 'platform',
-        requireResidentKey: true,
         userVerification: 'required',
       },
     };
