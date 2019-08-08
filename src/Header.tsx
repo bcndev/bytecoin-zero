@@ -1,7 +1,7 @@
 // Copyright 2019 The Bytecoin developers.
 // Licensed under the GNU Affero General Public License, version 3.
 
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import {CSSTransition} from 'react-transition-group';
 import * as loop from './lib/loop';
 import * as util from './lib/util';
@@ -61,6 +61,8 @@ enum DrawerType {
 const dayMS = 60 * 60 * 24 * 1000;
 
 export const Controls = React.memo((props: loop.IStatus & loop.IBalance & {addresses: loop.IAddress[]}) => {
+  const wallet = useContext(util.WalletContext);
+
   const initializing = props.topBlockHash === '';
   const syncing = props.topBlockHeight !== props.topKnownBlockHeight;
   const farBehind = (new Date()).valueOf() - props.topBlockTime.valueOf() > 2 * dayMS;
@@ -105,6 +107,12 @@ export const Controls = React.memo((props: loop.IStatus & loop.IBalance & {addre
     }
   };
 
+  const closeWallet = async () => {
+    if (wallet) {
+      await wallet.close();
+    }
+  };
+
   return (
     <div className={styles.controls}>
       <CSSTransition in={settingsOpen} mountOnEnter={true} timeout={300} classNames='balance-drawer-form-up'>
@@ -114,7 +122,7 @@ export const Controls = React.memo((props: loop.IStatus & loop.IBalance & {addre
               <input type='checkbox' id='noSleep' onChange={(e) => turnNoSleep(e.target.checked)}/> <label htmlFor='noSleep'>Prevent device sleep during sync</label>
             </div>
 
-            <button className={styles.closeWallet}>
+            <button className={styles.closeWallet} onClick={closeWallet}>
               Close wallet
             </button>
           </div>

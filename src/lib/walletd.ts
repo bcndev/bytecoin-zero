@@ -14,6 +14,7 @@ interface IWalletCreateReq {
 
 export class Walletd {
   private n: number = 0;
+  private closed = false;
 
   private constructor(bytecoindAddr: string) {
     cn_walletd_start([`--bytecoind-remote-address=${bytecoindAddr}`]);
@@ -31,7 +32,10 @@ export class Walletd {
   }
 
   async close(): Promise<void> {
-    return this.closeWallet();
+    if (!this.closed) {
+      this.closed = true;
+      return this.closeWallet();
+    }
   }
 
   private createWallet(req: IWalletCreateReq): Promise<void> {
@@ -83,11 +87,11 @@ export class Walletd {
       this.n++;
 
       console.time(label);
-      Walletd.postJSON('/json_rpc', json, (resp) => {
+      Walletd.postJSON(method, '/json_rpc', json, (resp) => {
         console.timeEnd(label);
 
         if (resp.hasOwnProperty('error')) {
-          const msg = `JSON-RPC error #${resp.error.code}: ${resp.error.message}`;
+          const msg = `[${method}] JSON-RPC error #${resp.error.code}: ${resp.error.message}`;
           console.warn(msg);
           reject(new Error(msg));
         } else {
@@ -97,7 +101,7 @@ export class Walletd {
     });
   }
 
-  private static postJSON(path: string, json: any, resolve: (value: any) => void, reject: (error: any) => void) {
+  private static postJSON(id: string, path: string, json: any, resolve: (value: any) => void, reject: (error: any) => void) {
     const params = JSON.stringify(json);
     const handle = cn_http_server_call('POST', path, params, (status: number, body: string) => {
       if (status === 200) {
@@ -105,11 +109,11 @@ export class Walletd {
           const result = JSON.parse(body);
           resolve(result);
         } catch (err) {
-          console.warn('JSON-RPC reply parsing failed', err);
+          console.warn(`[${id}] JSON reply parsing failed`, err);
           reject(err);
         }
       } else {
-        const msg = `JSON-RPC HTTP status ${status}`;
+        const msg = `[${id}] HTTP status ${status}`;
         console.warn(msg);
         reject(new Error(msg));
       }

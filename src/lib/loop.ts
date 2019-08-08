@@ -84,6 +84,10 @@ export interface ITransfer {
 
 export const MAX_BLOCK_NUMBER = 500000000;
 
+function isWalletClosedErr(err: Error | null): boolean {
+  return err !== null && err.message.indexOf('#-32600: Wallet closed') !== -1;
+}
+
 export async function start(
   setWallet: (wallet: walletd.Walletd) => void,
   setStatus: (status: IStatus) => void,
@@ -110,7 +114,11 @@ syncLoop:
       const [status, errStatus] = await util.try_(instance.getStatus(lastStatusReq));
       if (status === undefined) {
         console.warn('failed to get status', lastStatusReq, errStatus);
-        continue;
+        if (isWalletClosedErr(errStatus)) {
+          return;
+        } else {
+          continue;
+        }
       } else if (status.top_known_block_height === 0) {
         continue;
       }
@@ -135,7 +143,11 @@ syncLoop:
       const [balance, errBalance] = await util.try_(instance.getBalance(req));
       if (balance === undefined) {
         console.warn('failed to get balance', req, errBalance);
-        continue;
+        if (isWalletClosedErr(errBalance)) {
+          return;
+        } else {
+          continue;
+        }
       }
       setBalance({
         spendable: balance.spendable,
@@ -154,7 +166,11 @@ syncLoop:
         const [transferData, err] = await util.try_(instance.getTransfers(req));
         if (transferData === undefined) {
           console.warn('failed to get history transfers', req, err);
-          continue;
+          if (isWalletClosedErr(err)) {
+            return;
+          } else {
+            continue;
+          }
         }
 
         state.mergeConfirmedFuture((transferData.blocks || []).reverse());
@@ -171,7 +187,11 @@ syncLoop:
           const [transferData, err] = await util.try_(instance.getTransfers(req));
           if (transferData === undefined) {
             console.warn('failed to get transfers', req, err);
-            continue syncLoop;
+            if (isWalletClosedErr(err)) {
+              return;
+            } else {
+              continue syncLoop;
+            }
           }
 
           state.mergeConfirmedFuture(transferData.blocks || []);
@@ -193,7 +213,11 @@ syncLoop:
           const [transferData, err] = await util.try_(instance.getTransfers(req));
           if (transferData === undefined) {
             console.warn('failed to get future transfers', req, err);
-            continue syncLoop;
+            if (isWalletClosedErr(err)) {
+              return;
+            } else {
+              continue syncLoop;
+            }
           }
 
           state.mergeUnconfirmedFuture(transferData.blocks || []);
@@ -209,7 +233,11 @@ syncLoop:
         const [walletRecords, err] = await util.try_(instance.getWalletRecords({}));
         if (walletRecords === undefined) {
           console.warn('failed to get wallet records', err);
-          continue;
+          if (isWalletClosedErr(err)) {
+            return;
+          } else {
+            continue;
+          }
         }
 
         const addresses = walletRecords.records.map((record): IAddress => {
