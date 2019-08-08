@@ -18,8 +18,15 @@ const SendForm = React.memo((props: {dismiss: () => void}) => {
   const [amount, setAmount] = useState(0);
   const [addressValid, setAddressValid] = useState(false);
   const [amountValid, setAmountValid] = useState(false);
+  const [sending, setSending] = useState(false);
 
   const send = async () => {
+    setSending(true);
+    await doSend();
+    setSending(false);
+  };
+
+  const doSend = async () => {
     // TODO derive username from wallet
     const ok = await util.bioApprove('Bytecoin Zero', 'bytecoin-zero-user', 'Bytecoin Zero User');
     if (!ok || !wallet) {
@@ -95,7 +102,7 @@ const SendForm = React.memo((props: {dismiss: () => void}) => {
         <button className={styles.cancelButton} onClick={props.dismiss}>
           Cancel
         </button>
-        <button className={styles.sendButton} onClick={send} disabled={!addressValid || !amountValid}>
+        <button className={styles.sendButton} onClick={send} disabled={sending || !addressValid || !amountValid}>
           Send
         </button>
       </div>
