@@ -2,7 +2,7 @@
 // Licensed under the GNU Affero General Public License, version 3.
 
 import React, {useEffect, useRef, useState} from 'react';
-import {CSSTransition} from 'react-transition-group';
+import {SwitchTransition, CSSTransition} from 'react-transition-group';
 import * as loop from './lib/loop';
 import * as util from './lib/util';
 import {ReactComponent as ArrowNE} from './img/Arrow_northeast.svg';
@@ -15,11 +15,9 @@ import styles from './css/Header.module.css';
 // @ts-ignore
 import NoSleep from 'nosleep.js';
 
-export const Status = React.memo((props: loop.IStatus) => {
+export const Status = React.memo((props: loop.IStatus & {toggleSettingsOpen: () => void}) => {
   const initializing = props.topBlockHash === '';
   const syncing = props.topBlockHeight !== props.topKnownBlockHeight;
-
-  const [settingsOpen, setSettingsOpen] = useState(false);
 
   const relTime = util.useRelativeTime(props.topBlockTime);
 
@@ -31,7 +29,7 @@ export const Status = React.memo((props: loop.IStatus) => {
       <div className={styles.syncStatusSummary}>
         <div className={styles.syncStatus}>
           {initializing ? 'Initializing wallet…' :
-            <button className={`${styles.settings} link-like`} onClick={() => setSettingsOpen(!settingsOpen)}>
+            <button className={`${styles.settingsButton} link-like`} onClick={props.toggleSettingsOpen}>
               {syncing ? <span className={styles.ellipsis}>Syncing</span> : 'Synced'}
             </button>
           }
@@ -64,7 +62,7 @@ enum DrawerType {
 
 const dayMS = 60 * 60 * 24 * 1000;
 
-export const Controls = React.memo((props: loop.IStatus & loop.IBalance & {addresses: loop.IAddress[]}) => {
+export const Controls = React.memo((props: loop.IStatus & loop.IBalance & {settingsOpen: boolean, addresses: loop.IAddress[]}) => {
   const initializing = props.topBlockHash === '';
   const syncing = props.topBlockHeight !== props.topKnownBlockHeight;
   const farBehind = (new Date()).valueOf() - props.topBlockTime.valueOf() > 2 * dayMS;
@@ -108,7 +106,7 @@ export const Controls = React.memo((props: loop.IStatus & loop.IBalance & {addre
     }
   };
 
-  return (
+  const controls = (
     <div className={styles.controls}>
       <CSSTransition in={showNoSleep} unmountOnExit={true} timeout={300} classNames='balance-drawer-form-up'>
         <div className={`${styles.drawer} ${styles.noSleep}`}>
@@ -146,5 +144,24 @@ export const Controls = React.memo((props: loop.IStatus & loop.IBalance & {addre
         </div>
       </CSSTransition>
     </div>
+  );
+
+  const settings = (
+    <div className={styles.controls}>
+      <div className={styles.main}>
+        hello?
+      </div>
+    </div>
+  );
+
+  return (
+    <SwitchTransition>
+      <CSSTransition timeout={300} key={props.settingsOpen ? 'settings' : 'controls'} classNames='controls-or-settings'>
+        <>
+          {props.settingsOpen && settings}
+          {!props.settingsOpen && controls}
+        </>
+      </CSSTransition>
+    </SwitchTransition>
   );
 });

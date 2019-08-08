@@ -29,7 +29,7 @@
 .syncStatus {
 }
 
-.settings {
+.settingsButton {
   color: white !important;
   text-decoration: underline !important;
 }
@@ -217,3 +217,24 @@
   transform: scaleY(0);
   transition: transform 300ms 0ms ease-out;
 }
+
+:global(.controls-or-settings-enter) {
+  transform: rotateY(90deg);
+  will-change: transform;
+}
+
+:global(.controls-or-settings-enter-active) {
+  transform: rotateY(0);
+  transition: transform 300ms 0ms ease-out;
+}
+
+:global(.controls-or-settings-exit) {
+  transform: rotateY(0);
+  will-change: transform;
+}
+
+:global(.controls-or-settings-exit-active) {
+  transform: rotateY(90deg);
+  transition: transform 300ms 0ms ease-out;
+}
+
