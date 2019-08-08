@@ -3,7 +3,7 @@
  * Licensed under the GNU Affero General Public License, version 3.
  */
 
-.app {
+.wallet {
   display: flex;
   flex-direction: column;
   white-space: nowrap;
@@ -35,31 +35,4 @@
   background-color: var(--color-danger);
 
   box-shadow: var(--big-shadow);
-}
-
-/* bootstrap container code */
-.app {
-  width: 100%;
-  margin-right: auto;
-  margin-left: auto;
-}
-@media (min-width: 576px) {
-  .app {
-    max-width: 540px;
-  }
-}
-@media (min-width: 768px) {
-  .app {
-    max-width: 720px;
-  }
-}
-@media (min-width: 992px) {
-  .app {
-    max-width: 960px;
-  }
-}
-@media (min-width: 1200px) {
-  .app {
-    max-width: 1140px;
-  }
 }

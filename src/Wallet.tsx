@@ -7,7 +7,7 @@ import * as loop from './lib/loop';
 import * as util from './lib/util';
 import {Status, Controls} from './Header';
 import History from './History';
-import styles from './css/App.module.css';
+import styles from './css/Wallet.module.css';
 
 const initialStatus: loop.IStatus = {
   topBlockHeight: 0,
@@ -22,7 +22,7 @@ const initialBalance: loop.IBalance = {
   lockedOrUnconfirmed: 0,
 };
 
-const App = React.memo(() => {
+const Wallet = React.memo(() => {
   const [wallet, setWallet] = useState<walletd.Walletd | null>(null);
   const [status, setStatus] = useState<loop.IStatus>(initialStatus);
   const [balance, setBalance] = useState<loop.IBalance>(initialBalance);
@@ -34,7 +34,7 @@ const App = React.memo(() => {
   }, []);
 
   return (
-    <div className={styles.app}>
+    <div className={`${styles.wallet} container`}>
       <util.WalletContext.Provider value={wallet}>
         <Status {...status}/>
         <Controls {...status} {...balance} addresses={addresses}/>
@@ -52,4 +52,4 @@ const App = React.memo(() => {
   );
 });
 
-export default App;
+export default Wallet;
