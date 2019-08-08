@@ -151,9 +151,11 @@ export const Controls = React.memo((props: loop.IStatus & loop.IBalance & {addre
             <input type='checkbox' id='noSleep' onChange={(e) => turnNoSleep(e.target.checked)}/> <label htmlFor='noSleep'>Prevent device sleep during sync</label>
           </div>
 
-          <button onClick={() => setSettingsOpen(false)}>
-            Close
-          </button>
+          <div className={styles.settingsButtonsRow}>
+            <button className={styles.settingsCloseButton} onClick={() => setSettingsOpen(false)}>
+              Close
+            </button>
+          </div>
         </div>
       </div>
     </div>

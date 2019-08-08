@@ -208,3 +208,17 @@
   transition: transform 300ms 0ms ease-out;
 }
 
+.settings {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.settingsButtonsRow {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.settingsCloseButton {
+}
