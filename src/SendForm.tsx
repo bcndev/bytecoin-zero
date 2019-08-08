@@ -10,7 +10,6 @@ import * as loop from './lib/loop';
 // TODO: messages
 // TODO: multiple recipients
 // TODO: custom fee
-// TODO: 'sending' state (biometrics / network latency)
 const SendForm = React.memo((props: {dismiss: () => void}) => {
   const wallet = useContext(util.WalletContext);
 
