@@ -19,6 +19,8 @@ export const Status = React.memo((props: loop.IStatus) => {
   const initializing = props.topBlockHash === '';
   const syncing = props.topBlockHeight !== props.topKnownBlockHeight;
 
+  const [settingsOpen, setSettingsOpen] = useState(false);
+
   const relTime = util.useRelativeTime(props.topBlockTime);
 
   return (
@@ -29,7 +31,7 @@ export const Status = React.memo((props: loop.IStatus) => {
       <div className={styles.syncStatusSummary}>
         <div className={styles.syncStatus}>
           {initializing ? 'Initializing wallet…' :
-            <button className={`${styles.settings} link-like`}>
+            <button className={`${styles.settings} link-like`} onClick={() => setSettingsOpen(!settingsOpen)}>
               {syncing ? <span className={styles.ellipsis}>Syncing</span> : 'Synced'}
             </button>
           }

@@ -31,6 +31,7 @@
 
 .settings {
   color: white !important;
+  text-decoration: underline !important;
 }
 
 .syncStatusBlock a {
