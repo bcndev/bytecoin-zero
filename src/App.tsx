@@ -23,7 +23,6 @@ const initialBalance: loop.IBalance = {
 };
 
 const App = React.memo(() => {
-  const [settingsOpen, setSettingsOpen] = useState(false);
   const [wallet, setWallet] = useState<walletd.Walletd | null>(null);
   const [status, setStatus] = useState<loop.IStatus>(initialStatus);
   const [balance, setBalance] = useState<loop.IBalance>(initialBalance);
@@ -37,8 +36,8 @@ const App = React.memo(() => {
   return (
     <div className={styles.app}>
       <util.WalletContext.Provider value={wallet}>
-        <Status {...status} toggleSettingsOpen={() => setSettingsOpen(!settingsOpen)}/>
-        <Controls {...status} {...balance} settingsOpen={settingsOpen} addresses={addresses}/>
+        <Status {...status}/>
+        <Controls {...status} {...balance} addresses={addresses}/>
 
         <History history={history}/>
 

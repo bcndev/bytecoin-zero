@@ -29,11 +29,6 @@
 .syncStatus {
 }
 
-.settingsButton {
-  color: white !important;
-  text-decoration: underline !important;
-}
-
 .syncStatusBlock a {
   color: white;
   text-decoration: underline;
@@ -72,10 +67,6 @@
   top: 0;
 
   margin: 0 1rem;
-}
-
-.noSleep label {
-  margin-bottom: 0;
 }
 
 .main {
@@ -137,6 +128,11 @@
   overflow: hidden;
 }
 
+.settingsButton {
+  margin-left: 0.5rem !important;
+  font-family: var(--emoji-fonts);
+}
+
 .balanceAvailable {
   font-size: x-large;
 }
@@ -144,10 +140,6 @@
 .balancePending {
   color: var(--color-muted);
   font-size: small;
-}
-
-.settingsIcon {
-  font-family: var(--emoji-fonts);
 }
 
 .recv {
@@ -172,28 +164,6 @@
   background-color: var(--color-light);
 
   padding: 1rem;
-}
-
-:global(.balance-drawer-form-up-enter) {
-  transform: scaleY(0);
-  transform-origin: bottom;
-  will-change: transform;
-}
-
-:global(.balance-drawer-form-up-enter-active) {
-  transform: scaleY(1);
-  transition: transform 300ms 0ms ease-out;
-}
-
-:global(.balance-drawer-form-up-exit) {
-  transform: scaleY(1);
-  transform-origin: bottom;
-  will-change: transform;
-}
-
-:global(.balance-drawer-form-up-exit-active) {
-  transform: scaleY(0);
-  transition: transform 300ms 0ms ease-out;
 }
 
 :global(.balance-drawer-form-down-enter) {

@@ -15,7 +15,7 @@ import styles from './css/Header.module.css';
 // @ts-ignore
 import NoSleep from 'nosleep.js';
 
-export const Status = React.memo((props: loop.IStatus & {toggleSettingsOpen: () => void}) => {
+export const Status = React.memo((props: loop.IStatus) => {
   const initializing = props.topBlockHash === '';
   const syncing = props.topBlockHeight !== props.topKnownBlockHeight;
 
@@ -29,9 +29,7 @@ export const Status = React.memo((props: loop.IStatus & {toggleSettingsOpen: () 
       <div className={styles.syncStatusSummary}>
         <div className={styles.syncStatus}>
           {initializing ? 'Initializing wallet…' :
-            <button className={`${styles.settingsButton} link-like`} onClick={props.toggleSettingsOpen}>
-              {syncing ? <span className={styles.ellipsis}>Syncing</span> : 'Synced'}
-            </button>
+              syncing ? <span className={styles.ellipsis}>Syncing</span> : 'Synced'
           }
         </div>
         {props.lowerLevelError ?
@@ -62,21 +60,22 @@ enum DrawerType {
 
 const dayMS = 60 * 60 * 24 * 1000;
 
-export const Controls = React.memo((props: loop.IStatus & loop.IBalance & {settingsOpen: boolean, addresses: loop.IAddress[]}) => {
+export const Controls = React.memo((props: loop.IStatus & loop.IBalance & {addresses: loop.IAddress[]}) => {
   const initializing = props.topBlockHash === '';
   const syncing = props.topBlockHeight !== props.topKnownBlockHeight;
   const farBehind = (new Date()).valueOf() - props.topBlockTime.valueOf() > 2 * dayMS;
-  const showNoSleep = syncing && farBehind && util.isMobile();
+  const wantNoSleep = syncing && farBehind && util.isMobile();
 
   const noSleep = useRef(new NoSleep());
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const [drawerType, setDrawerType] = useState(DrawerType.None);
   const [nextDrawerType, setNextDrawerType] = useState(DrawerType.None);
 
   useEffect(() => {
-    if (!showNoSleep) {
+    if (!wantNoSleep) {
       turnNoSleep(false);
     }
-  }, [showNoSleep]);
+  }, [wantNoSleep]);
 
   const turnNoSleep = (on: boolean) => {
     console.info(`no sleep: ${on}`);
@@ -108,15 +107,13 @@ export const Controls = React.memo((props: loop.IStatus & loop.IBalance & {setti
 
   const controls = (
     <div className={styles.controls}>
-      <CSSTransition in={showNoSleep} unmountOnExit={true} timeout={300} classNames='balance-drawer-form-up'>
-        <div className={`${styles.drawer} ${styles.noSleep}`}>
-          <input type='checkbox' id='noSleep' onChange={(e) => turnNoSleep(e.target.checked)}/> <label htmlFor='noSleep'>Prevent device sleep during sync</label>
-        </div>
-      </CSSTransition>
       <div className={styles.main}>
         <div className={styles.balance}>
           <div className={styles.balanceAvailable}>
             {util.formatBCN(props.spendable)}
+            {!initializing && <button className={`${styles.settingsButton} link-like`} onClick={() => setSettingsOpen(true)}>
+                &#9881;&#65039;
+            </button>}
           </div>
           <div className={styles.balancePending}>
             {!syncing && props.lockedOrUnconfirmed > 0 && `${util.formatBCN(props.lockedOrUnconfirmed, 3)} locked or unconfirmed`}
@@ -149,17 +146,25 @@ export const Controls = React.memo((props: loop.IStatus & loop.IBalance & {setti
   const settings = (
     <div className={styles.controls}>
       <div className={styles.main}>
-        hello?
+        <div className={styles.settings}>
+          <div className={styles.noSleepGroup}>
+            <input type='checkbox' id='noSleep' onChange={(e) => turnNoSleep(e.target.checked)}/> <label htmlFor='noSleep'>Prevent device sleep during sync</label>
+          </div>
+
+          <button onClick={() => setSettingsOpen(false)}>
+            Close
+          </button>
+        </div>
       </div>
     </div>
   );
 
   return (
     <SwitchTransition>
-      <CSSTransition timeout={300} key={props.settingsOpen ? 'settings' : 'controls'} classNames='controls-or-settings'>
+      <CSSTransition timeout={300} key={settingsOpen ? 'settings' : 'controls'} classNames='controls-or-settings'>
         <>
-          {props.settingsOpen && settings}
-          {!props.settingsOpen && controls}
+          {settingsOpen && settings}
+          {!settingsOpen && controls}
         </>
       </CSSTransition>
     </SwitchTransition>
