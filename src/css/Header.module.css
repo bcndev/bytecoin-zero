@@ -166,6 +166,32 @@
   padding: 1rem;
 }
 
+:global(.balance-drawer-form-up-enter) {
+  transform: scaleY(0);
+  transform-origin: bottom;
+  will-change: transform;
+}
+
+:global(.balance-drawer-form-up-enter-active) {
+  transform: scaleY(1);
+  transition: transform 300ms 0ms ease-out;
+}
+
+:global(.balance-drawer-form-up-exit) {
+  transform: scaleY(1);
+  transform-origin: bottom;
+  will-change: transform;
+}
+
+:global(.balance-drawer-form-up-exit-active) {
+  transform: scaleY(0);
+  transition: transform 300ms 0ms ease-out;
+}
+
+:global(.balance-drawer-form-up-exit-done) {
+  display: none;
+}
+
 :global(.balance-drawer-form-down-enter) {
   transform: scaleY(0);
   transform-origin: top;
@@ -188,37 +214,13 @@
   transition: transform 300ms 0ms ease-out;
 }
 
-:global(.controls-or-settings-enter) {
-  transform: rotateY(90deg);
-  will-change: transform;
-}
-
-:global(.controls-or-settings-enter-active) {
-  transform: rotateY(0);
-  transition: transform 300ms 0ms ease-out;
-}
-
-:global(.controls-or-settings-exit) {
-  transform: rotateY(0);
-  will-change: transform;
-}
-
-:global(.controls-or-settings-exit-active) {
-  transform: rotateY(90deg);
-  transition: transform 300ms 0ms ease-out;
-}
-
 .settings {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
 }
 
-.settingsButtonsRow {
-  margin-top: 1rem;
-  display: flex;
-  justify-content: flex-end;
+.noSleepGroup {
+  margin-bottom: 0.5rem;
 }
 
-.settingsCloseButton {
+.closeWallet {
+  color: var(--color-danger);
 }

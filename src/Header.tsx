@@ -2,7 +2,7 @@
 // Licensed under the GNU Affero General Public License, version 3.
 
 import React, {useEffect, useRef, useState} from 'react';
-import {SwitchTransition, CSSTransition} from 'react-transition-group';
+import {CSSTransition} from 'react-transition-group';
 import * as loop from './lib/loop';
 import * as util from './lib/util';
 import {ReactComponent as ArrowNE} from './img/Arrow_northeast.svg';
@@ -105,13 +105,26 @@ export const Controls = React.memo((props: loop.IStatus & loop.IBalance & {addre
     }
   };
 
-  const controls = (
+  return (
     <div className={styles.controls}>
+      <CSSTransition in={settingsOpen} mountOnEnter={true} timeout={300} classNames='balance-drawer-form-up'>
+        <div className={styles.drawer}>
+          <div className={styles.settings}>
+            <div className={styles.noSleepGroup}>
+              <input type='checkbox' id='noSleep' onChange={(e) => turnNoSleep(e.target.checked)}/> <label htmlFor='noSleep'>Prevent device sleep during sync</label>
+            </div>
+
+            <button className={styles.closeWallet}>
+              Close wallet
+            </button>
+          </div>
+        </div>
+      </CSSTransition>
       <div className={styles.main}>
         <div className={styles.balance}>
           <div className={styles.balanceAvailable}>
             {util.formatBCN(props.spendable)}
-            {!initializing && <button className={`${styles.settingsButton} link-like`} onClick={() => setSettingsOpen(true)}>
+            {!initializing && <button className={`${styles.settingsButton} link-like`} onClick={() => setSettingsOpen(!settingsOpen)}>
                 &#9881;&#65039;
             </button>}
           </div>
@@ -141,34 +154,5 @@ export const Controls = React.memo((props: loop.IStatus & loop.IBalance & {addre
         </div>
       </CSSTransition>
     </div>
-  );
-
-  const settings = (
-    <div className={styles.controls}>
-      <div className={styles.main}>
-        <div className={styles.settings}>
-          <div className={styles.noSleepGroup}>
-            <input type='checkbox' id='noSleep' onChange={(e) => turnNoSleep(e.target.checked)}/> <label htmlFor='noSleep'>Prevent device sleep during sync</label>
-          </div>
-
-          <div className={styles.settingsButtonsRow}>
-            <button className={styles.settingsCloseButton} onClick={() => setSettingsOpen(false)}>
-              Close
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
-  return (
-    <SwitchTransition>
-      <CSSTransition timeout={300} key={settingsOpen ? 'settings' : 'controls'} classNames='controls-or-settings'>
-        <>
-          {settingsOpen && settings}
-          {!settingsOpen && controls}
-        </>
-      </CSSTransition>
-    </SwitchTransition>
   );
 });
