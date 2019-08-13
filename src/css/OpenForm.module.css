@@ -42,9 +42,16 @@
   padding-left: 0.25rem;
 }
 
+.descGroup textarea:global(.invalid) {
+  color: var(--color-danger);
+}
+
 .controls {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+}
+
+.genButton {
 }
 
 .openButton {
