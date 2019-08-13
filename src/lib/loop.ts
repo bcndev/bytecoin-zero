@@ -96,7 +96,11 @@ export async function start(
   setAddresses: (addresses: IAddress[]) => void,
   setHistory: (days: IDay[]) => void,
 ) {
-  const instance = await walletd.Walletd.create(DEFAULT_BYTECOIND_ADDR, description, 0);
+  const [instance, err] = await util.try_(walletd.Walletd.create(DEFAULT_BYTECOIND_ADDR, description, 0));
+  if (instance === undefined) {
+    alert(`Failed to open wallet: ${err}`);
+    return;
+  }
 
   try {
     setWallet(instance);

@@ -62,7 +62,7 @@ const OpenForm = React.memo((props: {onOpen: (desc: string) => void}) => {
 
         <div className={styles.controls}>
           <button className={styles.genButton} onClick={generate}>
-            Generate new mnemonic
+            Generate mnemonic
           </button>
 
           <button className={styles.openButton} onClick={open} disabled={opening || !descriptionValid}>
