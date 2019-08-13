@@ -36,3 +36,23 @@
 
   box-shadow: var(--big-shadow);
 }
+
+:global(.app-main-enter) {
+  opacity: 0;
+  will-change: opacity;
+}
+
+:global(.app-main-enter-active) {
+  opacity: 1;
+  transition: opacity 300ms 0ms ease-out;
+}
+
+:global(.app-main-exit) {
+  opacity: 1;
+  will-change: opacity;
+}
+
+:global(.app-main-exit-active) {
+  opacity: 0;
+  transition: opacity 300ms 0ms ease-out;
+}
