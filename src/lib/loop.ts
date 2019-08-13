@@ -89,13 +89,14 @@ function isWalletClosedErr(err: Error | null): boolean {
 }
 
 export async function start(
+  description: string,
   setWallet: (wallet: walletd.Walletd) => void,
   setStatus: (status: IStatus) => void,
   setBalance: (balance: IBalance) => void,
   setAddresses: (addresses: IAddress[]) => void,
   setHistory: (days: IDay[]) => void,
 ) {
-  const instance = await walletd.Walletd.create(DEFAULT_BYTECOIND_ADDR, DEFAULT_MNEMONIC, 0);
+  const instance = await walletd.Walletd.create(DEFAULT_BYTECOIND_ADDR, description, 0);
 
   try {
     setWallet(instance);
@@ -257,7 +258,6 @@ syncLoop:
   }
 }
 
-const DEFAULT_MNEMONIC = 'autumn actor sleep rebel fee scissors garage try claim miss maple ribbon alarm size above kite mass gain render grow dice decrease subway calm';
 const DEFAULT_BYTECOIND_ADDR = 'https://node02.bytecoin.org:8091';
 
 const MAX_STATUS_DELAY_MS = 100;

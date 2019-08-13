@@ -8,18 +8,18 @@ import OpenForm from './OpenForm';
 import Wallet from './Wallet';
 
 const App = React.memo(() => {
-  const [curWallet, setCurWallet] = useState('');
+  const [walletDescription, setWalletDescription] = useState('');
 
   return (
     <div className={`${styles.app} container`}>
       <SwitchTransition>
-        <CSSTransition timeout={300} key={curWallet} mountOnEnter={true} unmountOnExit={true} classNames='app-main'>
+        <CSSTransition timeout={300} key={walletDescription} mountOnEnter={true} unmountOnExit={true} classNames='app-main'>
           <>
-            {!curWallet &&
-              <OpenForm onOpen={(wallet) => setCurWallet(wallet)}/>
+            {!walletDescription &&
+              <OpenForm onOpen={(desc) => setWalletDescription(desc)}/>
             }
-            {curWallet &&
-              <Wallet onClose={() => setCurWallet('')}/>
+            {walletDescription &&
+              <Wallet description={walletDescription} onClose={() => setWalletDescription('')}/>
             }
           </>
         </CSSTransition>
