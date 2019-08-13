@@ -18,3 +18,4 @@
 - fork gridy-avatars
 - more visible difference between transactions you can expand and e.g. unlocks you can not
 - include precise version info in UI
+- remove non-english wordlists from bundle
