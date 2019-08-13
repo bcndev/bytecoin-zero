@@ -9,6 +9,7 @@ import Wallet from './Wallet';
 
 const App = React.memo(() => {
   const [walletDescription, setWalletDescription] = useState('');
+  const [walletNew, setWalletNew] = useState(false);
 
   return (
     <div className={`${styles.app} container`}>
@@ -16,10 +17,13 @@ const App = React.memo(() => {
         <CSSTransition timeout={300} key={walletDescription} mountOnEnter={true} unmountOnExit={true} classNames='app-main'>
           <>
             {!walletDescription &&
-              <OpenForm onOpen={(desc) => setWalletDescription(desc)}/>
+              <OpenForm onOpen={(desc, isNew) => {
+                setWalletDescription(desc);
+                setWalletNew(isNew);
+              }}/>
             }
             {walletDescription &&
-              <Wallet description={walletDescription} onClose={() => setWalletDescription('')}/>
+              <Wallet description={walletDescription} isNew={walletNew} onClose={() => setWalletDescription('')}/>
             }
           </>
         </CSSTransition>

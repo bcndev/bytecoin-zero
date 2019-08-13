@@ -10,13 +10,16 @@ import styles from './css/OpenForm.module.css';
 
 const DEFAULT_MNEMONIC = 'autumn actor sleep rebel fee scissors garage try claim miss maple ribbon alarm size above kite mass gain render grow dice decrease subway calm';
 
-const OpenForm = React.memo((props: {onOpen: (desc: string) => void}) => {
+const OpenForm = React.memo((props: {onOpen: (desc: string, isNew: boolean) => void}) => {
   const [description, setDescription] = useState('');
+  const [genDescription, setGenDescription] = useState('');
   const [descriptionValid, setDescriptionValid] = useState(false);
   const [opening, setOpening] = useState(false);
 
   const generate = () => {
-    setDescription(DEFAULT_MNEMONIC);
+    const desc = DEFAULT_MNEMONIC;
+    setDescription(desc);
+    setGenDescription(desc);
     setDescriptionValid(true);
   };
 
@@ -32,7 +35,8 @@ const OpenForm = React.memo((props: {onOpen: (desc: string) => void}) => {
       return;
     }
 
-    props.onOpen(description);
+    const desc = description.trim().toLowerCase();
+    props.onOpen(desc, desc === genDescription && desc !== DEFAULT_MNEMONIC);
   };
 
   return (
@@ -53,7 +57,7 @@ const OpenForm = React.memo((props: {onOpen: (desc: string) => void}) => {
                     value={description}
                     onChange={(e) => {
                       const desc = e.target.value;
-                      const ok = validateMnemonic(desc, englishWordlist);
+                      const ok = validateMnemonic(desc.trim().toLowerCase(), englishWordlist);
                       setDescriptionValid(ok);
                       setDescription(desc);
                     }}

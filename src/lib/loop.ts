@@ -90,13 +90,16 @@ function isWalletClosedErr(err: Error | null): boolean {
 
 export async function start(
   description: string,
+  isNew: boolean,
   setWallet: (wallet: walletd.Walletd) => void,
   setStatus: (status: IStatus) => void,
   setBalance: (balance: IBalance) => void,
   setAddresses: (addresses: IAddress[]) => void,
   setHistory: (days: IDay[]) => void,
 ) {
-  const [instance, err] = await util.try_(walletd.Walletd.create(DEFAULT_BYTECOIND_ADDR, description, 0));
+  const timestamp = isNew ? Date.now().valueOf() / 1000 : 0;
+
+  const [instance, err] = await util.try_(walletd.Walletd.create(DEFAULT_BYTECOIND_ADDR, description, timestamp));
   if (instance === undefined) {
     alert(`Failed to open wallet: ${err}`);
     return;

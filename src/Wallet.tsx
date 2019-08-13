@@ -22,7 +22,7 @@ const initialBalance: loop.IBalance = {
   lockedOrUnconfirmed: 0,
 };
 
-const Wallet = React.memo((props: {description: string, onClose: () => void}) => {
+const Wallet = React.memo((props: {description: string, isNew: boolean, onClose: () => void}) => {
   const [wallet, setWallet] = useState<walletd.Walletd | null>(null);
   const [status, setStatus] = useState<loop.IStatus>(initialStatus);
   const [balance, setBalance] = useState<loop.IBalance>(initialBalance);
@@ -30,7 +30,7 @@ const Wallet = React.memo((props: {description: string, onClose: () => void}) =>
   const [history, setHistory] = useState<loop.IDay[]>([]);
 
   useEffect(() => {
-    loop.start(props.description, setWallet, setStatus, setBalance, setAddresses, setHistory).then(() => {
+    loop.start(props.description, props.isNew, setWallet, setStatus, setBalance, setAddresses, setHistory).then(() => {
       console.info('wallet closed');
       props.onClose();
     });
