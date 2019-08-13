@@ -54,7 +54,7 @@
 }
 
 body {
-  background: linear-gradient(-45deg, #EE7752, #E73C7E, #23A6D5, #23D5AB) 100% 50%;
+  background: linear-gradient(-45deg, #EE7752, #E73C7E, #23A6D5, #23D5AB) fixed 50% 50%;
   background-size: 400% 400%;
 }
 
