@@ -12,6 +12,7 @@
     "@types/react": "^16.8.25",
     "@types/react-dom": "^16.8.5",
     "@types/react-transition-group": "^4.2.2",
+    "bip39": "^3.0.2",
     "date-fns": "^2.0.0-beta.4",
     "gridy-avatars": "=1.1.3",
     "lodash": "^4.17.15",

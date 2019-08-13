@@ -2,6 +2,8 @@
 // Licensed under the GNU Affero General Public License, version 3.
 
 import React, {useState} from 'react';
+import {validateMnemonic} from 'bip39';
+import englishWordlist from 'bip39/src/wordlists/english.json';
 import * as util from './lib/util';
 import logo from './img/logo.svg';
 import styles from './css/OpenForm.module.css';
@@ -44,7 +46,7 @@ const OpenForm = React.memo((props: {onOpen: (description: string) => void}) => 
                     maxLength={256}
                     onChange={(e) => {
                       const desc = e.target.value;
-                      const ok = desc.trim().split(/\s+/g).length >= 12
+                      const ok = validateMnemonic(desc, englishWordlist);
                       setDescValid(ok);
                     }}
           />
