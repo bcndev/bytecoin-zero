@@ -1,8 +1,8 @@
 // Copyright 2019 The Bytecoin developers.
 // Licensed under the GNU Affero General Public License, version 3.
 
-import React, {useState} from 'react';
-import {validateMnemonic} from 'bip39';
+import React, {useState, useRef} from 'react';
+import {generateMnemonic, validateMnemonic} from 'bip39';
 import englishWordlist from 'bip39/src/wordlists/english.json';
 import * as util from './lib/util';
 import logo from './img/logo.svg';
@@ -11,13 +11,16 @@ import styles from './css/OpenForm.module.css';
 const DEFAULT_MNEMONIC = 'autumn actor sleep rebel fee scissors garage try claim miss maple ribbon alarm size above kite mass gain render grow dice decrease subway calm';
 
 const OpenForm = React.memo((props: {onOpen: (desc: string, isNew: boolean) => void}) => {
+  const firstGen = useRef(true);
   const [description, setDescription] = useState('');
   const [genDescription, setGenDescription] = useState('');
   const [descriptionValid, setDescriptionValid] = useState(false);
   const [opening, setOpening] = useState(false);
 
   const generate = () => {
-    const desc = DEFAULT_MNEMONIC;
+    const desc = firstGen.current ? DEFAULT_MNEMONIC : generateMnemonic(256, undefined, englishWordlist);
+    firstGen.current = false;
+
     setDescription(desc);
     setGenDescription(desc);
     setDescriptionValid(true);

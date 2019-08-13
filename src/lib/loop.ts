@@ -97,7 +97,7 @@ export async function start(
   setAddresses: (addresses: IAddress[]) => void,
   setHistory: (days: IDay[]) => void,
 ) {
-  const timestamp = isNew ? Date.now().valueOf() / 1000 : 0;
+  const timestamp = isNew ? Math.round(Date.now().valueOf() / 1000) : 0;
 
   const [instance, err] = await util.try_(walletd.Walletd.create(DEFAULT_BYTECOIND_ADDR, description, timestamp));
   if (instance === undefined) {
