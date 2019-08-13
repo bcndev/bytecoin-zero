@@ -13,10 +13,8 @@
 - status height change to confirmed height?
 - line-height (1.5rem) layout/grid scale
 - group detailed transfers by kind
-- BCN123 in english locale
+- BCN123 in english locale (Safari)
 - explicitly indicate external links
 - fork gridy-avatars
 - more visible difference between transactions you can expand and e.g. unlocks you can not
-- settings link which includes BCN logo
-- manifest.json for Safari
 - include precise version info in UI

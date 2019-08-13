@@ -5,4 +5,47 @@
 
 .openForm {
   flex-grow: 1;
+
+  padding: 1rem;
+}
+
+.logo {
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+
+  display: flex;
+  justify-content: center;
+}
+
+.logo img {
+  width: 5rem;
+  height: 5rem;
+
+  border-radius: 50%;
+  box-shadow: 0 0 0.5rem white;
+}
+
+.body {
+  background-color: white;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: var(--big-shadow);
+}
+
+.descGroup {
+  margin-bottom: 1rem;
+}
+
+.descGroup textarea {
+  width: 100%;
+  font-family: var(--monospace-fonts);
+  padding-left: 0.25rem;
+}
+
+.controls {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.openButton {
 }

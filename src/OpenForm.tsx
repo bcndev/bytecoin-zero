@@ -3,11 +3,13 @@
 
 import React, {useState} from 'react';
 import * as util from './lib/util';
+import logo from './img/logo.svg';
 import styles from './css/OpenForm.module.css';
 
 const DEFAULT_MNEMONIC = 'autumn actor sleep rebel fee scissors garage try claim miss maple ribbon alarm size above kite mass gain render grow dice decrease subway calm';
 
 const OpenForm = React.memo((props: {onOpen: (description: string) => void}) => {
+  const [descValid, setDescValid] = useState(false);
   const [opening, setOpening] = useState(false);
 
   const open = async () => {
@@ -27,9 +29,33 @@ const OpenForm = React.memo((props: {onOpen: (description: string) => void}) => 
 
   return (
     <div className={styles.openForm}>
-      <button onClick={open} disabled={opening}>
-        Open wallet
-      </button>
+      <div className={styles.logo}>
+        <img src={logo} alt='Bytecoin'/>
+      </div>
+
+      <div className={styles.body}>
+        <div className={styles.descGroup}>
+          <textarea id='wallet-description'
+                    placeholder='BIP39 mnemonic of Bytecoin wallet'
+                    rows={7}
+                    autoCapitalize='none'
+                    autoComplete='off'
+                    spellCheck={false}
+                    maxLength={256}
+                    onChange={(e) => {
+                      const desc = e.target.value;
+                      const ok = desc.trim().split(/\s+/g).length >= 12
+                      setDescValid(ok);
+                    }}
+          />
+        </div>
+
+        <div className={styles.controls}>
+          <button className={styles.openButton} onClick={open} disabled={opening || !descValid}>
+            Open wallet
+          </button>
+        </div>
+      </div>
     </div>
   );
 });
