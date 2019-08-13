@@ -85,7 +85,7 @@ export interface ITransfer {
 export const MAX_BLOCK_NUMBER = 500000000;
 
 function isWalletClosedErr(err: Error | null): boolean {
-  return err !== null && err.message.indexOf('#-32600: Wallet closed') !== -1;
+  return err !== null && (err.message.indexOf('#-32600: Wallet closed') !== -1 || err.message.indexOf('#-32600: Wallet must be open') !== -1);
 }
 
 export async function start(

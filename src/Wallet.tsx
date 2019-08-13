@@ -22,7 +22,7 @@ const initialBalance: loop.IBalance = {
   lockedOrUnconfirmed: 0,
 };
 
-const Wallet = React.memo(() => {
+const Wallet = React.memo((props: {onClose: () => void}) => {
   const [wallet, setWallet] = useState<walletd.Walletd | null>(null);
   const [status, setStatus] = useState<loop.IStatus>(initialStatus);
   const [balance, setBalance] = useState<loop.IBalance>(initialBalance);
@@ -30,23 +30,19 @@ const Wallet = React.memo(() => {
   const [history, setHistory] = useState<loop.IDay[]>([]);
 
   useEffect(() => {
-    loop.start(setWallet, setStatus, setBalance, setAddresses, setHistory).then(() => {console.error('THE END')});
-  }, []);
+    loop.start(setWallet, setStatus, setBalance, setAddresses, setHistory).then(() => {
+      console.info('wallet closed');
+      props.onClose();
+    });
+  }, [props]);
 
   return (
-    <div className={`${styles.wallet} container`}>
+    <div className={styles.wallet}>
       <util.WalletContext.Provider value={wallet}>
         <Status {...status}/>
         <Controls {...status} {...balance} addresses={addresses}/>
 
         <History history={history}/>
-
-        <div className={styles.footer}>
-          © 2019 The Bytecoin developers · <a href='https://github.com/bcndev/bytecoin-zero/blob/master/doc/index.md' target='_blank' rel='noreferrer noopener'>Documentation</a>
-        </div>
-        <div className={styles.warning}>
-          Unstable development version. For testing only.
-        </div>
       </util.WalletContext.Provider>
     </div>
   );

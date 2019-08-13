@@ -1,0 +1,38 @@
+/*
+ * Copyright 2019 The Bytecoin developers.
+ * Licensed under the GNU Affero General Public License, version 3.
+ */
+
+.app {
+  display: flex;
+  flex-direction: column;
+  white-space: nowrap;
+  min-height: 100vh;
+}
+
+.footer {
+  padding: 1rem;
+  width: 100%;
+  text-align: center;
+  color: white;
+  font-size: small;
+}
+
+.footer a {
+  color: white;
+  text-decoration: underline;
+}
+
+.warning {
+  position: sticky;
+  bottom: 0;
+  padding: 0.5rem;
+
+  text-align: center;
+  font-size: small;
+  font-weight: bold;
+  color: white;
+  background-color: var(--color-danger);
+
+  box-shadow: var(--big-shadow);
+}
