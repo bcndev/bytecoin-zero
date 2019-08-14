@@ -3,9 +3,10 @@
 
 import React, {useContext, useState} from 'react';
 import {checkAddressFormat} from '@bcndev/bytecoin';
-import styles from './css/SendForm.module.css';
 import * as util from './lib/util';
 import * as sync from './lib/sync';
+import Avatar from './Avatar';
+import styles from './css/SendForm.module.css';
 
 // TODO: messages
 // TODO: multiple recipients
@@ -62,39 +63,40 @@ const SendForm = React.memo((props: {dismiss: () => void}) => {
   return (
     <div className={styles.sendForm}>
       <div className={styles.transfer}>
-        <div className={styles.addressGroup}>
-          <label htmlFor='toAddress'>Address</label>
-          <input className={`${addressValid ? 'valid' : 'invalid'}`}
-                 type='text'
-                 placeholder='bcnZ… or 2…'
-                 id='toAddress'
-                 onChange={(e) => {
-                   const addr = e.target.value;
-                   const ok = checkAddressFormat(addr);
-                   setAddressValid(ok);
-                   if (ok) {
-                     setAddress(addr);
-                   }
-                 }}
-          />
-        </div>
-        <div className={styles.amountGroup}>
-          <label htmlFor='toAmount'>Amount</label>
-          <input className={`${amountValid ? 'valid' : 'invalid'}`}
-                 type='number'
-                 placeholder='0'
-                 id='toAmount'
-                 min='0.01'
-                 step='0.01'
-                 onChange={(e) => {
-                   const am = Math.round(parseFloat(e.target.value) * 1e8); // TODO: exact calculation
-                   const ok = am > 0; // TODO: check upper bound
-                   setAmountValid(ok);
-                   if (ok) {
-                     setAmount(am);
-                   }
-                 }}
-          />
+        {addressValid && <div className={styles.addressViz}>
+            <Avatar message={address}/>
+        </div>}
+        <div className={styles.transferBody}>
+          <div className={styles.addressGroup}>
+            <input className={`${addressValid ? 'valid' : 'invalid'}`}
+                   type='text'
+                   placeholder='Bytecoin address: bcnZ… or 2…'
+                   onChange={(e) => {
+                     const addr = e.target.value;
+                     const ok = checkAddressFormat(addr);
+                     setAddressValid(ok);
+                     if (ok) {
+                       setAddress(addr);
+                     }
+                   }}
+            />
+          </div>
+          <div className={styles.amountGroup}>
+            <input className={`${amountValid ? 'valid' : 'invalid'}`}
+                   type='number'
+                   placeholder={util.formatBCN(0)}
+                   min='0.01'
+                   step='0.01'
+                   onChange={(e) => {
+                     const am = Math.round(parseFloat(e.target.value) * 1e8); // TODO: exact calculation
+                     const ok = am > 0; // TODO: check upper bound
+                     setAmountValid(ok);
+                     if (ok) {
+                       setAmount(am);
+                     }
+                   }}
+            />
+          </div>
         </div>
       </div>
       <div className={styles.controls}>

@@ -11,13 +11,6 @@
   padding-left: 0.25rem;
 }
 
-.sendForm label {
-  width: 5rem;
-  text-align: right;
-  margin-bottom: 0;
-  padding-right: 0.5rem;
-}
-
 .sendForm input:global(.valid) {
 }
 
@@ -26,12 +19,16 @@
 }
 
 .transfer {
+  display: flex;
   margin-bottom: 1rem;
+}
+
+.transferBody {
+  flex-grow: 1;
 }
 
 .addressGroup, .amountGroup {
   display: flex;
-  align-items: baseline;
   margin-bottom: 0.5rem;
 }
 
@@ -45,6 +42,14 @@
   flex-grow: 1;
   min-width: 10ch;
   max-width: 20ch;
+}
+
+.addressViz {
+  align-self: center;
+  width: 3rem;
+  height: 3rem;
+  padding: 0.25rem;
+  margin-right: 0.5rem;
 }
 
 .controls {
