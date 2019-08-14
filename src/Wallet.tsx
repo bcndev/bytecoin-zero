@@ -3,13 +3,13 @@
 
 import React, {useEffect, useState} from 'react';
 import * as walletd from './lib/walletd';
-import * as loop from './lib/loop';
+import * as sync from './lib/sync';
 import * as util from './lib/util';
 import {Status, Controls} from './Header';
 import History from './History';
 import styles from './css/Wallet.module.css';
 
-const initialStatus: loop.IStatus = {
+const initialStatus: sync.IStatus = {
   topBlockHeight: 0,
   topBlockTime: new Date(0), // TODO use date just before wallet creation timestamp
   topBlockHash: '',
@@ -17,20 +17,20 @@ const initialStatus: loop.IStatus = {
   lowerLevelError: '',
 };
 
-const initialBalance: loop.IBalance = {
+const initialBalance: sync.IBalance = {
   spendable: 0,
   lockedOrUnconfirmed: 0,
 };
 
 const Wallet = React.memo((props: {description: string, isNew: boolean, viewOnly: boolean, onClose: () => void}) => {
   const [wallet, setWallet] = useState<walletd.Walletd | null>(null);
-  const [status, setStatus] = useState<loop.IStatus>(initialStatus);
-  const [balance, setBalance] = useState<loop.IBalance>(initialBalance);
-  const [addresses, setAddresses] = useState<loop.IAddress[]>([]);
-  const [history, setHistory] = useState<loop.IDay[]>([]);
+  const [status, setStatus] = useState<sync.IStatus>(initialStatus);
+  const [balance, setBalance] = useState<sync.IBalance>(initialBalance);
+  const [addresses, setAddresses] = useState<sync.IAddress[]>([]);
+  const [history, setHistory] = useState<sync.IDay[]>([]);
 
   useEffect(() => {
-    loop.start(props.description, props.isNew, setWallet, setStatus, setBalance, setAddresses, setHistory).then(() => {
+    sync.start(props.description, props.isNew, setWallet, setStatus, setBalance, setAddresses, setHistory).then(() => {
       console.info('wallet closed');
       props.onClose();
     });

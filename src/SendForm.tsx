@@ -5,7 +5,7 @@ import React, {useContext, useState} from 'react';
 import {checkAddressFormat} from '@bcndev/bytecoin';
 import styles from './css/SendForm.module.css';
 import * as util from './lib/util';
-import * as loop from './lib/loop';
+import * as sync from './lib/sync';
 
 // TODO: messages
 // TODO: multiple recipients
@@ -41,7 +41,7 @@ const SendForm = React.memo((props: {dismiss: () => void}) => {
       },
       any_spend_address: true,
       change_address: '',
-      confirmed_height_or_depth: loop.CONFIRMED_DEPTH,
+      confirmed_height_or_depth: sync.CONFIRMED_DEPTH,
     }));
     if (txResp === undefined) {
       alert(`Failed to create transaction: ${errCreate}`);

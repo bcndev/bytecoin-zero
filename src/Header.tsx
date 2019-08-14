@@ -3,7 +3,7 @@
 
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import {CSSTransition} from 'react-transition-group';
-import * as loop from './lib/loop';
+import * as sync from './lib/sync';
 import * as util from './lib/util';
 import {ReactComponent as ArrowNE} from './img/Arrow_northeast.svg';
 import {ReactComponent as ArrowSE} from './img/Arrow_southeast.svg';
@@ -15,7 +15,7 @@ import styles from './css/Header.module.css';
 // @ts-ignore
 import NoSleep from 'nosleep.js';
 
-export const Status = React.memo((props: loop.IStatus) => {
+export const Status = React.memo((props: sync.IStatus) => {
   const initializing = props.topBlockHash === '';
   const syncing = props.topBlockHeight !== props.topKnownBlockHeight;
 
@@ -60,10 +60,10 @@ enum DrawerType {
 
 const dayMS = 60 * 60 * 24 * 1000;
 
-export const Controls = React.memo((props: loop.IStatus & loop.IBalance & {
+export const Controls = React.memo((props: sync.IStatus & sync.IBalance & {
   viewOnly: boolean,
-  addresses: loop.IAddress[],
-  setAddresses: (addresses: loop.IAddress[]) => void,
+  addresses: sync.IAddress[],
+  setAddresses: (addresses: sync.IAddress[]) => void,
 }) => {
   const wallet = useContext(util.WalletContext);
 

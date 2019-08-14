@@ -4,7 +4,7 @@
 import React, {useState, useContext, useEffect} from 'react';
 import {CSSTransition, TransitionGroup} from 'react-transition-group';
 import {flatMap} from 'lodash';
-import * as loop from './lib/loop';
+import * as sync from './lib/sync';
 import * as util from './lib/util';
 import Avatar from './Avatar';
 import {ReactComponent as ArrowNE} from './img/Arrow_northeast.svg';
@@ -13,7 +13,7 @@ import {ReactComponent as ArrowSW} from './img/Arrow_southwest.svg';
 import styles from './css/History.module.css';
 import {formatDateTime, formatTime} from './lib/util';
 
-const History = React.memo((props: {history: loop.IDay[]}) => {
+const History = React.memo((props: {history: sync.IDay[]}) => {
   const {history} = props;
 
   return (
@@ -29,7 +29,7 @@ const History = React.memo((props: {history: loop.IDay[]}) => {
   );
 });
 
-const Day = React.memo((props: loop.IDay) => {
+const Day = React.memo((props: sync.IDay) => {
   return (
     <div className={styles.historyDay}>
       <div className={styles.historyDayHeader}>
@@ -65,11 +65,11 @@ const Day = React.memo((props: loop.IDay) => {
   );
 });
 
-const Transaction = React.memo((props: loop.ITransaction & {confirmed: boolean}) => {
+const Transaction = React.memo((props: sync.ITransaction & {confirmed: boolean}) => {
   const [expanded, setExpanded] = useState(false);
   const [detailsAnimating, setDetailsAnimating] = useState(false);
 
-  const kindClass = loop.TxKind[props.kind];
+  const kindClass = sync.TxKind[props.kind];
 
   return (
     <div className={`${styles.tx} ${kindClass}`}>
@@ -120,13 +120,13 @@ const Transaction = React.memo((props: loop.ITransaction & {confirmed: boolean})
   );
 });
 
-const Transfer = React.memo((props: loop.ITransfer & {unconfirmed?: boolean, genSendproof?: boolean, detailed?: boolean, isUnlock?: boolean}) => {
-  const isSpend = props.kind === loop.TransferKind.Spend;
-  const isSend = props.kind === loop.TransferKind.Send;
-  const isReceive = props.kind === loop.TransferKind.Receive;
+const Transfer = React.memo((props: sync.ITransfer & {unconfirmed?: boolean, genSendproof?: boolean, detailed?: boolean, isUnlock?: boolean}) => {
+  const isSpend = props.kind === sync.TransferKind.Spend;
+  const isSend = props.kind === sync.TransferKind.Send;
+  const isReceive = props.kind === sync.TransferKind.Receive;
 
   const lockedUntil = props.unlockBlockOrTimestamp > 0 ?
-    props.unlockBlockOrTimestamp > loop.MAX_BLOCK_NUMBER ?
+    props.unlockBlockOrTimestamp > sync.MAX_BLOCK_NUMBER ?
       `Locked until ${formatDateTime(new Date(props.unlockBlockOrTimestamp * 1000))}` :
       `Locked until block #${props.unlockBlockOrTimestamp}` : '';
 

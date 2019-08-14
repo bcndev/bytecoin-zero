@@ -4,13 +4,13 @@
 import React, {useContext, useState} from 'react';
 import styles from './css/ReceiveForm.module.css';
 import * as util from './lib/util';
-import * as loop from './lib/loop';
+import * as sync from './lib/sync';
 import Avatar from './Avatar';
 
 const ReceiveForm = React.memo((props: {
   viewOnly: boolean,
-  addresses: loop.IAddress[],
-  setAddresses: (addresses: loop.IAddress[]) => void,
+  addresses: sync.IAddress[],
+  setAddresses: (addresses: sync.IAddress[]) => void,
   dismiss: () => void,
 }) => {
   const wallet = useContext(util.WalletContext);
