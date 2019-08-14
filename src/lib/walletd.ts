@@ -25,7 +25,7 @@ export class Walletd {
   }
 
   static async create(bytecoindAddr: string, description: string, timestamp: number): Promise<Walletd> {
-    console.info('opening wallet:', new Date(timestamp * 1000));
+    console.info('opening wallet:', description, new Date(timestamp * 1000));
 
     const w = new Walletd(bytecoindAddr);
 
