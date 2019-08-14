@@ -70,6 +70,10 @@ export class Walletd {
     return this.rpc('get_transfers', req);
   }
 
+  createAddresses(req: ICreateAddressesReq): Promise<ICreateAddressesResp> {
+    return this.rpc('create_addresses', req);
+  }
+
   createSendproof(req: ICreateSendproofReq): Promise<ICreateSendproofResp> {
     return this.rpc('create_sendproof', req);
   }
@@ -274,6 +278,16 @@ export interface IGetTransfersResp {
   readonly blocks?: IBlock[];
   readonly next_from_height: number;
   readonly next_to_height: number;
+}
+
+export interface ICreateAddressesReq {
+  secret_spend_keys: string[];
+  creation_timestamp?: number;
+}
+
+export interface ICreateAddressesResp {
+  readonly addresses: string[];
+  readonly secret_spend_keys: string[];
 }
 
 export interface ICreateSendproofReq {

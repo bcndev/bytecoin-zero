@@ -40,7 +40,7 @@ const Wallet = React.memo((props: {description: string, isNew: boolean, viewOnly
     <div className={styles.wallet}>
       <util.WalletContext.Provider value={wallet}>
         <Status {...status}/>
-        <Controls {...status} {...balance} viewOnly={props.viewOnly} addresses={addresses}/>
+        <Controls {...status} {...balance} viewOnly={props.viewOnly} addresses={addresses} setAddresses={setAddresses}/>
 
         <History history={history}/>
       </util.WalletContext.Provider>

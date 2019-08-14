@@ -60,7 +60,11 @@ enum DrawerType {
 
 const dayMS = 60 * 60 * 24 * 1000;
 
-export const Controls = React.memo((props: loop.IStatus & loop.IBalance & {viewOnly: boolean, addresses: loop.IAddress[]}) => {
+export const Controls = React.memo((props: loop.IStatus & loop.IBalance & {
+  viewOnly: boolean,
+  addresses: loop.IAddress[],
+  setAddresses: (addresses: loop.IAddress[]) => void,
+}) => {
   const wallet = useContext(util.WalletContext);
 
   const initializing = props.topBlockHash === '';
@@ -153,7 +157,7 @@ export const Controls = React.memo((props: loop.IStatus & loop.IBalance & {viewO
       </div>
       <CSSTransition in={drawerType === DrawerType.Receive} onExited={transitionNextDrawer} unmountOnExit={true} timeout={300} classNames='balance-drawer-form-down'>
         <div className={styles.drawer}>
-          <ReceiveForm addresses={props.addresses} dismiss={() => setDrawerType(DrawerType.None)}/>
+          <ReceiveForm viewOnly={props.viewOnly} addresses={props.addresses} setAddresses={props.setAddresses} dismiss={() => setDrawerType(DrawerType.None)}/>
         </div>
       </CSSTransition>
       <CSSTransition in={drawerType === DrawerType.Send} onExited={transitionNextDrawer} unmountOnExit={true} timeout={300} classNames='balance-drawer-form-down'>

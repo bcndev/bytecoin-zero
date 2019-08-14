@@ -6,6 +6,11 @@
 .receiveForm {
 }
 
+.addresses {
+  max-height: 30vh;
+  overflow-y: scroll;
+}
+
 .address {
   display: flex;
 }
@@ -43,4 +48,8 @@
   display: flex;
   align-items: center;
   margin-left: 0.5rem;
+}
+
+.addAddress {
+  margin-top: 1rem;
 }
