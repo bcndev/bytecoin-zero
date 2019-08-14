@@ -2,7 +2,7 @@
 // Licensed under the GNU Affero General Public License, version 3.
 
 import React, {useContext, useState} from 'react';
-import {checkAddress} from '@bcndev/bytecoin';
+import {checkAddressFormat} from '@bcndev/bytecoin';
 import styles from './css/SendForm.module.css';
 import * as util from './lib/util';
 import * as loop from './lib/loop';
@@ -70,7 +70,7 @@ const SendForm = React.memo((props: {dismiss: () => void}) => {
                  id='toAddress'
                  onChange={(e) => {
                    const addr = e.target.value;
-                   const ok = checkAddress(addr);
+                   const ok = checkAddressFormat(addr);
                    setAddressValid(ok);
                    if (ok) {
                      setAddress(addr);

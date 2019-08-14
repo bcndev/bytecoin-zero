@@ -5,7 +5,7 @@
   "homepage": ".",
   "private": true,
   "dependencies": {
-    "@bcndev/bytecoin": "^0.1.2",
+    "@bcndev/bytecoin": "^0.2.0",
     "@types/jest": "^24.0.17",
     "@types/lodash": "^4.14.136",
     "@types/node": "^12.7.1",
