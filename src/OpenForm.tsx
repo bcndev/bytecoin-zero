@@ -3,6 +3,7 @@
 
 import React, {useState, useRef} from 'react';
 import {generateMnemonic, validateMnemonic} from 'bip39';
+import {checkAuditFormat, auditPattern} from "@bcndev/bytecoin";
 import englishWordlist from 'bip39/src/wordlists/english.json';
 import * as util from './lib/util';
 import logo from './img/logo.svg';
@@ -51,16 +52,17 @@ const OpenForm = React.memo((props: {onOpen: (desc: string, isNew: boolean) => v
       <div className={styles.body}>
         <div className={styles.descGroup}>
           <textarea className={`${descriptionValid ? 'valid' : 'invalid'}`}
-                    placeholder='BIP39 mnemonic of Bytecoin wallet'
+                    placeholder='Bytecoin BIP39 mnemonic or an audit secret'
                     rows={7}
                     autoCapitalize='none'
                     autoComplete='off'
                     spellCheck={false}
-                    maxLength={256}
+                    maxLength={512}
                     value={description}
                     onChange={(e) => {
                       const desc = e.target.value;
-                      const ok = validateMnemonic(desc.trim().toLowerCase(), englishWordlist);
+                      const audit = auditPattern.test(desc.trim());
+                      const ok = audit ? checkAuditFormat(desc.trim()) : validateMnemonic(desc.trim().toLowerCase(), englishWordlist);
                       setDescriptionValid(ok);
                       setDescription(desc);
                     }}

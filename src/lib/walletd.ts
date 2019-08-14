@@ -24,12 +24,13 @@ export class Walletd {
     cn_walletd_start([`--bytecoind-remote-address=${bytecoindAddr}`]);
   }
 
-  static async create(bytecoindAddr: string, mnemonic: string, timestamp: number): Promise<Walletd> {
-    console.info('opening wallet:', mnemonic, new Date(timestamp * 1000));
+  static async create(bytecoindAddr: string, description: string, timestamp: number): Promise<Walletd> {
+    console.info('opening wallet:', description, new Date(timestamp * 1000));
 
     const w = new Walletd(bytecoindAddr);
+
     const resp = await w.createWallet({
-      mnemonic: mnemonic,
+      mnemonic: description,
       creation_timestamp: timestamp,
     });
 
