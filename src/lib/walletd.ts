@@ -8,8 +8,12 @@ declare function cn_http_server_call(method: string, path: string, body: string,
 declare function cn_http_server_cancel(handle: ModuleHTTPHandle): void;
 
 interface IWalletCreateReq {
-  readonly mnemonic: string;
-  readonly creation_timestamp: number;
+  mnemonic: string;
+  creation_timestamp: number;
+}
+
+interface IWalletCreateResp {
+  readonly wallet_file: string;
 }
 
 export class Walletd {
@@ -23,11 +27,13 @@ export class Walletd {
   static async create(bytecoindAddr: string, mnemonic: string, timestamp: number): Promise<Walletd> {
     console.info('opening wallet:', mnemonic, new Date(timestamp * 1000));
 
-    let w = new Walletd(bytecoindAddr);
-    await w.createWallet({
+    const w = new Walletd(bytecoindAddr);
+    const resp = await w.createWallet({
       mnemonic: mnemonic,
       creation_timestamp: timestamp,
     });
+
+    console.log('opened wallet, filename:', resp.wallet_file);
 
     return w;
   }
@@ -39,7 +45,7 @@ export class Walletd {
     }
   }
 
-  private createWallet(req: IWalletCreateReq): Promise<void> {
+  private createWallet(req: IWalletCreateReq): Promise<IWalletCreateResp> {
     return this.rpc('ext_create_wallet', req);
   }
 
