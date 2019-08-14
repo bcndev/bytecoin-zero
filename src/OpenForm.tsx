@@ -11,7 +11,7 @@ import styles from './css/OpenForm.module.css';
 
 const DEFAULT_MNEMONIC = 'autumn actor sleep rebel fee scissors garage try claim miss maple ribbon alarm size above kite mass gain render grow dice decrease subway calm';
 
-const OpenForm = React.memo((props: {onOpen: (desc: string, isNew: boolean) => void}) => {
+const OpenForm = React.memo((props: {onOpen: (desc: string, isNew: boolean, viewOnly: boolean) => void}) => {
   const firstGen = useRef(true);
   const [description, setDescription] = useState('');
   const [genDescription, setGenDescription] = useState('');
@@ -34,13 +34,19 @@ const OpenForm = React.memo((props: {onOpen: (desc: string, isNew: boolean) => v
   };
 
   const doOpen = async () => {
+    const audit = auditPattern.test(description.trim());
+    if (audit) {
+      props.onOpen(description.trim(), false, true);
+      return;
+    }
+
     const ok = await util.bioApprove('Bytecoin Zero', 'bytecoin-zero-user', 'Bytecoin Zero User');
     if (!ok) {
       return;
     }
 
     const desc = description.trim().toLowerCase();
-    props.onOpen(desc, desc === genDescription && desc !== DEFAULT_MNEMONIC);
+    props.onOpen(desc, desc === genDescription && desc !== DEFAULT_MNEMONIC, false);
   };
 
   return (

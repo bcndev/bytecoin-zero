@@ -60,7 +60,7 @@ enum DrawerType {
 
 const dayMS = 60 * 60 * 24 * 1000;
 
-export const Controls = React.memo((props: loop.IStatus & loop.IBalance & {addresses: loop.IAddress[]}) => {
+export const Controls = React.memo((props: loop.IStatus & loop.IBalance & {viewOnly: boolean, addresses: loop.IAddress[]}) => {
   const wallet = useContext(util.WalletContext);
 
   const initializing = props.topBlockHash === '';
@@ -146,7 +146,7 @@ export const Controls = React.memo((props: loop.IStatus & loop.IBalance & {addre
           </button>
         </div>
         <div className={styles.send} hidden={initializing}>
-          <button className={`link-like ${drawerType === DrawerType.Send ? 'active' : ''}`} onClick={() => transitionDrawer(DrawerType.Send)} disabled={syncing}>
+          <button className={`link-like ${drawerType === DrawerType.Send ? 'active' : ''}`} onClick={() => transitionDrawer(DrawerType.Send)} disabled={syncing || props.viewOnly}>
             <ArrowNE/> Send
           </button>
         </div>
