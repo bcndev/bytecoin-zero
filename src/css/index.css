@@ -59,6 +59,10 @@ body {
   background-size: 400% 400%;
 }
 
+#loading {
+  color: white;
+}
+
 button.link-like {
   color: var(--color-primary);
   background-color: transparent;
