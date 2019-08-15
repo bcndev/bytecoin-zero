@@ -5,6 +5,7 @@ import React, {useState, useRef, useEffect} from 'react';
 import {generateMnemonic, validateMnemonic} from 'bip39';
 import {checkAddressFormat, checkAuditFormat, auditPattern} from "@bcndev/bytecoin";
 import englishWordlist from 'bip39/src/wordlists/english.json';
+import Avatar from './Avatar';
 import * as util from './lib/util';
 import * as sync from './lib/sync';
 import logo from './img/logo.svg';
@@ -126,7 +127,17 @@ const OpenForm = React.memo((props: {onOpen: (desc: string, isNew: boolean, view
         {
           existingWallets.map(info =>
             <div key={info.filename} className={styles.walletFile}>
-              {info.filename}
+              <div className={styles.avatar}>
+                <Avatar message={info.firstAddress}/>
+              </div>
+              <div className={styles.walletDesc}>
+                <div className={styles.walletDetails}>
+                  <span className={styles.lastOpen}>Last opened: {util.formatDateTime(new Date(info.lastOpen))}</span> {info.viewOnly && <span className={styles.viewOnly}>View only</span>}
+                </div>
+                <div className={styles.firstAddress}>
+                  {info.firstAddress}
+                </div>
+              </div>
             </div>
           )
         }
