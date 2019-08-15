@@ -12,7 +12,7 @@ const Avatar = React.memo((props: {message: string}) => {
   const [content, setContent] = useState('');
 
   useEffect(() => {
-    util.digest(props.message.trim()).then((d) => {
+    util.digest(props.message.trim().normalize('NFKD')).then((d) => {
       const arr = new Uint8Array(d);
 
       const body       = arr[0] & 7;
