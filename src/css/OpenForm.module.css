@@ -25,11 +25,12 @@
   box-shadow: 0 0 0.5rem white;
 }
 
-.body {
+.fromDescription {
   background-color: white;
   padding: 1rem;
   border-radius: 0.5rem;
   box-shadow: var(--big-shadow);
+  margin-bottom: 2rem;
 }
 
 .descGroup {
@@ -55,4 +56,10 @@
 }
 
 .openButton {
+}
+
+.existingWallets {
+}
+
+.walletFile {
 }

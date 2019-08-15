@@ -82,6 +82,19 @@ export interface ITransfer {
   readonly transactionHash: string;
 }
 
+export interface IWalletInstanceInfo {
+  readonly viewOnly: boolean;
+  readonly lastOpen: number;
+}
+
+export interface IAddressWalletsInfo {
+  [filename: string]: IWalletInstanceInfo;
+}
+
+export interface IExistingWalletInfo {
+  [addr: string]: IAddressWalletsInfo;
+}
+
 export const MAX_BLOCK_NUMBER = 500000000;
 
 function isWalletClosedErr(err: Error | null): boolean {
@@ -251,9 +264,12 @@ syncLoop:
 
         if (instance.getFilename() !== '' && walletRecords.records.length > 0) {
           const key = `wallet.${walletRecords.records[0].address}`;
-          const filenames = JSON.parse(window.localStorage.getItem(key) || '{}');
-          filenames[instance.getFilename()] = viewOnly;
-          window.localStorage.setItem(key, JSON.stringify(filenames));
+          const info: IAddressWalletsInfo = JSON.parse(window.localStorage.getItem(key) || '{}');
+          info[instance.getFilename()] = {
+            lastOpen: Date.now().valueOf(),
+            viewOnly,
+          };
+          window.localStorage.setItem(key, JSON.stringify(info));
         }
 
         const addresses = walletRecords.records.map((record): IAddress => {
