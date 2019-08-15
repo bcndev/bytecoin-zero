@@ -105,11 +105,12 @@ const SendForm = React.memo((props: {dismiss: () => void}) => {
         </div>
       </div>
       <div className={styles.controls}>
-        <button className={styles.cancelButton} onClick={props.dismiss}>
-          Cancel
-        </button>
         <button className={styles.sendButton} onClick={send} disabled={sending || !addressValid || !amountValid}>
           Send
+        </button>
+
+        <button className={styles.cancelButton} onClick={props.dismiss}>
+          Cancel
         </button>
       </div>
     </div>

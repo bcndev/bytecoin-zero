@@ -54,13 +54,12 @@
 
 .controls {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
 }
 
 .cancelButton {
   color: var(--color-danger);
   padding: 0 0.5rem;
-  margin-right: 1rem;
 }
 
 .sendButton {
