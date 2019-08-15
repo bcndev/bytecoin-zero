@@ -141,7 +141,7 @@ const OpenForm = React.memo((props: {onOpen: (isFile: boolean, desc: string, isN
                 <div className={styles.walletDetails}>
                   <span className={styles.lastOpen}>Last opened: {util.formatDateTime(new Date(info.lastOpen))}</span> {info.viewOnly && <span className={styles.viewOnly}>View only</span>}
                 </div>
-                <div className={styles.firstAddress}>
+                <div className={styles.firstAddress} title='First address'>
                   {info.firstAddress}
                 </div>
               </div>
