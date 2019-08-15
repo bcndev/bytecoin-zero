@@ -27,6 +27,11 @@ const SendForm = React.memo((props: {dismiss: () => void}) => {
   };
 
   const doSend = async () => {
+    const approve = window.confirm(`Send ${util.formatBCN(amount)} to ${address}?`);
+    if (!approve) {
+      return;
+    }
+
     // TODO derive username from wallet
     const ok = await util.bioApprove('Bytecoin Zero', 'bytecoin-zero-user', 'Bytecoin Zero User');
     if (!ok || !wallet) {
