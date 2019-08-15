@@ -82,7 +82,7 @@
   flex-wrap: wrap;
 }
 
-.main svg {
+.recv button > svg:first-child, .send button > svg:first-child {
   height: 0.75rem;
   width: 0.75rem;
   fill: var(--color-text);
