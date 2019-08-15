@@ -21,6 +21,10 @@ const SendForm = React.memo((props: {dismiss: () => void}) => {
   const [sending, setSending] = useState(false);
 
   const send = async () => {
+    if (sending) {
+      return;
+    }
+
     setSending(true);
     await doSend();
     setSending(false);

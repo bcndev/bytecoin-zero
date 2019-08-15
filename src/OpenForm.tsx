@@ -61,6 +61,10 @@ const OpenForm = React.memo((props: {onOpen: (isFile: boolean, desc: string, isN
   };
 
   const open = async (isFile: boolean, desc: string, isNew: boolean, viewOnly: boolean, approve: boolean) => {
+    if (opening) {
+      return;
+    }
+
     setOpening(true);
     await doOpen(isFile, desc, isNew, viewOnly, approve);
     setOpening(false);
