@@ -73,9 +73,15 @@ const ReceiveForm = React.memo((props: {
         )
       }</div>
 
-      <button className={styles.addAddress} onClick={addAddress} disabled={props.viewOnly || creatingAddress}>
-        Add address
-      </button>
+      <div className={styles.controls}>
+        <button className={styles.addAddress} onClick={addAddress} disabled={props.viewOnly || creatingAddress}>
+          Add address
+        </button>
+
+        <button className={styles.cancel} onClick={props.dismiss}>
+          Cancel
+        </button>
+      </div>
     </div>
   );
 });

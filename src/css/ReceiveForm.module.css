@@ -50,6 +50,15 @@
   margin-left: 0.5rem;
 }
 
-.addAddress {
+.controls {
   margin-top: 1rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.addAddress {
+}
+
+.cancel {
+  color: var(--color-danger);
 }
