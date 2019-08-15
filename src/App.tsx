@@ -8,6 +8,7 @@ import OpenForm from './OpenForm';
 import Wallet from './Wallet';
 
 const App = React.memo(() => {
+  const [walletIsExistingFile, setWalletIsExistingFile] = useState(false);
   const [walletDescription, setWalletDescription] = useState('');
   const [walletNew, setWalletNew] = useState(false);
   const [walletViewOnly, setWalletViewOnly] = useState(false);
@@ -18,14 +19,15 @@ const App = React.memo(() => {
         <CSSTransition timeout={300} key={walletDescription} mountOnEnter={true} unmountOnExit={true} classNames='app-main'>
           <>
             {!walletDescription &&
-              <OpenForm onOpen={(desc, isNew, viewOnly) => {
+              <OpenForm onOpen={(isFile, desc, isNew, viewOnly) => {
+                setWalletIsExistingFile(isFile);
                 setWalletDescription(desc);
                 setWalletNew(isNew);
                 setWalletViewOnly(viewOnly);
               }}/>
             }
             {walletDescription &&
-              <Wallet description={walletDescription} isNew={walletNew} viewOnly={walletViewOnly} onClose={() => setWalletDescription('')}/>
+              <Wallet description={walletDescription} isFile={walletIsExistingFile} isNew={walletNew} viewOnly={walletViewOnly} onClose={() => setWalletDescription('')}/>
             }
           </>
         </CSSTransition>

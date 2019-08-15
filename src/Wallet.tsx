@@ -22,7 +22,7 @@ const initialBalance: sync.IBalance = {
   lockedOrUnconfirmed: 0,
 };
 
-const Wallet = React.memo((props: {description: string, isNew: boolean, viewOnly: boolean, onClose: () => void}) => {
+const Wallet = React.memo((props: {description: string, isFile: boolean, isNew: boolean, viewOnly: boolean, onClose: () => void}) => {
   const [wallet, setWallet] = useState<walletd.Walletd | null>(null);
   const [status, setStatus] = useState<sync.IStatus>(initialStatus);
   const [balance, setBalance] = useState<sync.IBalance>(initialBalance);
@@ -30,7 +30,7 @@ const Wallet = React.memo((props: {description: string, isNew: boolean, viewOnly
   const [history, setHistory] = useState<sync.IDay[]>([]);
 
   useEffect(() => {
-    sync.start(props.description, props.isNew, props.viewOnly, setWallet, setStatus, setBalance, setAddresses, setHistory).then(() => {
+    sync.start(props.isFile, props.description, props.isNew, props.viewOnly, setWallet, setStatus, setBalance, setAddresses, setHistory).then(() => {
       console.info('wallet closed');
       props.onClose();
     });

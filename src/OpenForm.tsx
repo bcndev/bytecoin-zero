@@ -20,7 +20,7 @@ interface IWalletInstanceInfo {
   readonly lastOpen: number;
 }
 
-const OpenForm = React.memo((props: {onOpen: (desc: string, isNew: boolean, viewOnly: boolean) => void}) => {
+const OpenForm = React.memo((props: {onOpen: (isFile: boolean, desc: string, isNew: boolean, viewOnly: boolean) => void}) => {
   const firstGen = useRef(true);
   const [description, setDescription] = useState('');
   const [genDescription, setGenDescription] = useState('');
@@ -64,26 +64,21 @@ const OpenForm = React.memo((props: {onOpen: (desc: string, isNew: boolean, view
     setDescriptionValid(true);
   };
 
-  const open = async () => {
+  const open = async (isFile: boolean, desc: string, isNew: boolean, viewOnly: boolean, approve: boolean) => {
     setOpening(true);
-    await doOpen();
+    await doOpen(isFile, desc, isNew, viewOnly, approve);
     setOpening(false);
   };
 
-  const doOpen = async () => {
-    const audit = auditPattern.test(description.trim());
-    if (audit) {
-      props.onOpen(description.trim(), false, true);
-      return;
+  const doOpen = async (isFile: boolean, desc: string, isNew: boolean, viewOnly: boolean, approve: boolean) => {
+    if (approve) {
+      const ok = await util.bioApprove('Bytecoin Zero', 'bytecoin-zero-user', 'Bytecoin Zero User');
+      if (!ok) {
+        return;
+      }
     }
 
-    const ok = await util.bioApprove('Bytecoin Zero', 'bytecoin-zero-user', 'Bytecoin Zero User');
-    if (!ok) {
-      return;
-    }
-
-    const desc = description.trim().toLowerCase();
-    props.onOpen(desc, desc === genDescription && desc !== DEFAULT_MNEMONIC, false);
+    props.onOpen(isFile, desc, isNew, viewOnly);
   };
 
   return (
@@ -117,7 +112,16 @@ const OpenForm = React.memo((props: {onOpen: (desc: string, isNew: boolean, view
             Generate mnemonic
           </button>
 
-          <button className={styles.openButton} onClick={open} disabled={opening || !descriptionValid}>
+          <button className={styles.openButton} disabled={opening || !descriptionValid} onClick={async () => {
+            const audit = auditPattern.test(description.trim());
+            if (audit) {
+              const desc = description.trim();
+              await open(false, desc, false, true, false);
+            } else {
+              const desc = description.trim().toLowerCase();
+              await open(false, desc,desc === genDescription && desc !== DEFAULT_MNEMONIC, false, true);
+            }
+          }}>
             Open wallet
           </button>
         </div>
@@ -126,7 +130,10 @@ const OpenForm = React.memo((props: {onOpen: (desc: string, isNew: boolean, view
       <div className={styles.existingWallets}>
         {
           existingWallets.map(info =>
-            <div key={info.filename} className={styles.walletFile}>
+            <div key={info.filename} className={styles.walletFile} onClick={async () => {
+              const desc = info.filename;
+              await open(true, desc, false, info.viewOnly, true);
+            }}>
               <div className={styles.avatar}>
                 <Avatar message={info.firstAddress}/>
               </div>

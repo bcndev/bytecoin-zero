@@ -16,6 +16,11 @@ interface IWalletCreateResp {
   readonly wallet_file: string;
 }
 
+interface IWalletOpenReq {
+  wallet_file: string;
+  wallet_password: string;
+}
+
 export class Walletd {
   private n = 0;
   private closed = false;
@@ -25,18 +30,27 @@ export class Walletd {
     cn_walletd_start([`--bytecoind-remote-address=${bytecoindAddr}`]);
   }
 
-  static async create(bytecoindAddr: string, description: string, timestamp: number): Promise<Walletd> {
+  static async create(bytecoindAddr: string, isFile: boolean, description: string, timestamp: number): Promise<Walletd> {
     console.info('opening wallet:', description, new Date(timestamp * 1000));
 
     const w = new Walletd(bytecoindAddr);
 
-    const resp = await w.createWallet({
-      mnemonic: description,
-      creation_timestamp: timestamp,
-    });
+    if (isFile) {
+      await w.openWallet({
+        wallet_file: description,
+        wallet_password: '',
+      });
 
-    console.log('opened wallet, filename:', resp.wallet_file);
-    w.filename = resp.wallet_file;
+      w.filename = description;
+    } else {
+      const resp = await w.createWallet({
+        mnemonic: description,
+        creation_timestamp: timestamp,
+      });
+
+      w.filename = resp.wallet_file;
+    }
+    console.log('created/opened wallet, filename:', w.filename);
 
     return w;
   }
@@ -54,6 +68,10 @@ export class Walletd {
 
   private createWallet(req: IWalletCreateReq): Promise<IWalletCreateResp> {
     return this.rpc('ext_create_wallet', req);
+  }
+
+  private openWallet(req: IWalletOpenReq): Promise<void> {
+    return this.rpc('ext_open_wallet', req);
   }
 
   private closeWallet(): Promise<void> {

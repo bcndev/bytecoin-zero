@@ -102,6 +102,7 @@ function isWalletClosedErr(err: Error | null): boolean {
 }
 
 export async function start(
+  isFile: boolean,
   description: string,
   isNew: boolean,
   viewOnly: boolean,
@@ -113,7 +114,7 @@ export async function start(
 ) {
   const timestamp = isNew ? Math.round(Date.now().valueOf() / 1000) : 0;
 
-  const [instance, err] = await util.try_(walletd.Walletd.create(DEFAULT_BYTECOIND_ADDR, description, timestamp));
+  const [instance, err] = await util.try_(walletd.Walletd.create(DEFAULT_BYTECOIND_ADDR, isFile, description, timestamp));
   if (instance === undefined) {
     alert(`Failed to open wallet: ${err}`);
     return;
