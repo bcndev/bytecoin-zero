@@ -17,8 +17,9 @@ interface IWalletCreateResp {
 }
 
 export class Walletd {
-  private n: number = 0;
+  private n = 0;
   private closed = false;
+  private filename = '';
 
   private constructor(bytecoindAddr: string) {
     cn_walletd_start([`--bytecoind-remote-address=${bytecoindAddr}`]);
@@ -35,6 +36,7 @@ export class Walletd {
     });
 
     console.log('opened wallet, filename:', resp.wallet_file);
+    w.filename = resp.wallet_file;
 
     return w;
   }
@@ -44,6 +46,10 @@ export class Walletd {
       this.closed = true;
       return this.closeWallet();
     }
+  }
+
+  getFilename(): string {
+    return this.filename;
   }
 
   private createWallet(req: IWalletCreateReq): Promise<IWalletCreateResp> {

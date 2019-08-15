@@ -30,7 +30,7 @@ const Wallet = React.memo((props: {description: string, isNew: boolean, viewOnly
   const [history, setHistory] = useState<sync.IDay[]>([]);
 
   useEffect(() => {
-    sync.start(props.description, props.isNew, setWallet, setStatus, setBalance, setAddresses, setHistory).then(() => {
+    sync.start(props.description, props.isNew, props.viewOnly, setWallet, setStatus, setBalance, setAddresses, setHistory).then(() => {
       console.info('wallet closed');
       props.onClose();
     });

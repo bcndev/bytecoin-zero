@@ -91,6 +91,7 @@ function isWalletClosedErr(err: Error | null): boolean {
 export async function start(
   description: string,
   isNew: boolean,
+  viewOnly: boolean,
   setWallet: (wallet: walletd.Walletd) => void,
   setStatus: (status: IStatus) => void,
   setBalance: (balance: IBalance) => void,
@@ -246,6 +247,13 @@ syncLoop:
           } else {
             continue;
           }
+        }
+
+        if (instance.getFilename() !== '' && walletRecords.records.length > 0) {
+          const key = `wallet.${walletRecords.records[0].address}`;
+          const filenames = JSON.parse(window.localStorage.getItem(key) || '{}');
+          filenames[instance.getFilename()] = viewOnly;
+          window.localStorage.setItem(key, JSON.stringify(filenames));
         }
 
         const addresses = walletRecords.records.map((record): IAddress => {
