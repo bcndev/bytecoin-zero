@@ -213,14 +213,3 @@
   transform: scaleY(0);
   transition: transform 300ms 0ms ease-out;
 }
-
-.settings {
-}
-
-.noSleepGroup {
-  margin-bottom: 0.5rem;
-}
-
-.closeWallet {
-  color: var(--color-danger);
-}

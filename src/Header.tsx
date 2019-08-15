@@ -1,19 +1,17 @@
 // Copyright 2019 The Bytecoin developers.
 // Licensed under the GNU Affero General Public License, version 3.
 
-import React, {useContext, useEffect, useRef, useState} from 'react';
+import React, {useState} from 'react';
 import {CSSTransition} from 'react-transition-group';
 import * as sync from './lib/sync';
 import * as util from './lib/util';
 import {ReactComponent as ArrowNE} from './img/Arrow_northeast.svg';
 import {ReactComponent as ArrowSE} from './img/Arrow_southeast.svg';
+import SettingsForm from './SettingsForm';
 import ReceiveForm from './ReceiveForm';
 import SendForm from './SendForm';
 import logo from './img/logo.svg';
 import styles from './css/Header.module.css';
-
-// @ts-ignore
-import NoSleep from 'nosleep.js';
 
 export const Status = React.memo((props: sync.IStatus) => {
   const initializing = props.topBlockHash === '';
@@ -58,40 +56,17 @@ enum DrawerType {
   Send,
 }
 
-const dayMS = 60 * 60 * 24 * 1000;
-
 export const Controls = React.memo((props: sync.IStatus & sync.IBalance & {
   viewOnly: boolean,
   addresses: sync.IAddress[],
   setAddresses: (addresses: sync.IAddress[]) => void,
 }) => {
-  const wallet = useContext(util.WalletContext);
-
   const initializing = props.topBlockHash === '';
   const syncing = props.topBlockHeight !== props.topKnownBlockHeight;
-  const farBehind = (new Date()).valueOf() - props.topBlockTime.valueOf() > 2 * dayMS;
-  const wantNoSleep = syncing && farBehind && util.isMobile();
 
-  const noSleep = useRef(new NoSleep());
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [drawerType, setDrawerType] = useState(DrawerType.None);
   const [nextDrawerType, setNextDrawerType] = useState(DrawerType.None);
-
-  useEffect(() => {
-    if (!wantNoSleep) {
-      turnNoSleep(false);
-    }
-  }, [wantNoSleep]);
-
-  const turnNoSleep = (on: boolean) => {
-    console.info(`no sleep: ${on}`);
-
-    if (on) {
-      noSleep.current.enable();
-    } else {
-      noSleep.current.disable();
-    }
-  };
 
   const transitionDrawer = (t: DrawerType) => {
     if (drawerType === DrawerType.None) {
@@ -111,25 +86,11 @@ export const Controls = React.memo((props: sync.IStatus & sync.IBalance & {
     }
   };
 
-  const closeWallet = async () => {
-    if (wallet) {
-      await wallet.close();
-    }
-  };
-
   return (
     <div className={styles.controls}>
       <CSSTransition in={settingsOpen} mountOnEnter={true} timeout={300} classNames='balance-drawer-form-up'>
         <div className={styles.drawer}>
-          <div className={styles.settings}>
-            <div className={styles.noSleepGroup}>
-              <input type='checkbox' id='noSleep' onChange={(e) => turnNoSleep(e.target.checked)}/> <label htmlFor='noSleep'>Prevent device sleep during sync</label>
-            </div>
-
-            <button className={styles.closeWallet} onClick={closeWallet}>
-              Close wallet
-            </button>
-          </div>
+          <SettingsForm topBlockHeight={props.topBlockHeight} topKnownBlockHeight={props.topKnownBlockHeight} topBlockTime={props.topBlockTime} dismiss={() => setSettingsOpen(false)}/>
         </div>
       </CSSTransition>
       <div className={styles.main}>

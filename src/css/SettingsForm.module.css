@@ -1,0 +1,25 @@
+/*
+ * Copyright 2019 The Bytecoin developers.
+ * Licensed under the GNU Affero General Public License, version 3.
+ */
+
+.settingsForm {
+}
+
+.noSleepGroup {
+}
+
+.controls {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.closeWallet {
+  padding: 0 0.5rem;
+}
+
+.cancel {
+  padding: 0 0.5rem;
+  color: var(--color-danger);
+}
