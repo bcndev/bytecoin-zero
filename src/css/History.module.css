@@ -4,13 +4,24 @@
  */
 
 .history {
-  poistion: relative;
+  display: flex;
+  flex-direction: column;
+  margin-top: 1rem;
   z-index: 0;
   flex-grow: 1;
 }
 
+.emptyHistory {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: small;
+  color: white;
+  flex-grow: 1;
+}
+
 .historyDay {
-  margin-top: 1rem;
   margin-bottom: 1rem;
 }
 

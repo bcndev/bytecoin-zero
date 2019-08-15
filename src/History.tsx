@@ -18,6 +18,12 @@ const History = React.memo((props: {history: sync.IDay[]}) => {
 
   return (
     <div className={styles.history}>
+      {
+        history.length === 0 &&
+        <div className={styles.emptyHistory}>
+            No transactions yet
+        </div>
+      }
       <TransitionGroup component={null}>
         {history.map((day) =>
           <CSSTransition key={day.date.valueOf()} timeout={1000} classNames='history-day'>

@@ -68,12 +68,6 @@ export const Controls = React.memo((props: sync.IStatus & sync.IBalance & {
   const [drawerType, setDrawerType] = useState(DrawerType.None);
   const [nextDrawerType, setNextDrawerType] = useState(DrawerType.None);
 
-  useEffect(() => {
-    if (!initializing && !syncing && !props.viewOnly && props.addresses.length === 1 && props.spendable === 0 && props.lockedOrUnconfirmed === 0) {
-      setDrawerType(DrawerType.Receive);
-    }
-  }, [initializing, syncing, props.viewOnly, props.addresses.length, props.spendable, props.lockedOrUnconfirmed]);
-
   const transitionDrawer = (t: DrawerType) => {
     if (drawerType === DrawerType.None) {
       setDrawerType(t);
