@@ -1,7 +1,7 @@
 // Copyright 2019 The Bytecoin developers.
 // Licensed under the GNU Affero General Public License, version 3.
 
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {generateMnemonic, validateMnemonic} from 'bip39';
 import {checkAddressFormat, checkAuditFormat, auditPattern} from "@bcndev/bytecoin";
 import englishWordlist from 'bip39/src/wordlists/english.json';
@@ -11,8 +11,6 @@ import * as sync from './lib/sync';
 import logo from './img/logo.svg';
 import styles from './css/OpenForm.module.css';
 
-const DEFAULT_MNEMONIC = 'autumn actor sleep rebel fee scissors garage try claim miss maple ribbon alarm size above kite mass gain render grow dice decrease subway calm';
-
 interface IWalletInstanceInfo {
   readonly firstAddress: string;
   readonly filename: string;
@@ -21,7 +19,6 @@ interface IWalletInstanceInfo {
 }
 
 const OpenForm = React.memo((props: {onOpen: (isFile: boolean, desc: string, isNew: boolean, viewOnly: boolean) => void}) => {
-  const firstGen = useRef(true);
   const [description, setDescription] = useState('');
   const [genDescription, setGenDescription] = useState('');
   const [descriptionValid, setDescriptionValid] = useState(false);
@@ -56,8 +53,7 @@ const OpenForm = React.memo((props: {onOpen: (isFile: boolean, desc: string, isN
   }, []);
 
   const generate = () => {
-    const desc = firstGen.current ? DEFAULT_MNEMONIC : generateMnemonic(256, undefined, englishWordlist);
-    firstGen.current = false;
+    const desc = generateMnemonic(256, undefined, englishWordlist);
 
     setDescription(desc);
     setGenDescription(desc);
@@ -119,7 +115,7 @@ const OpenForm = React.memo((props: {onOpen: (isFile: boolean, desc: string, isN
               await open(false, desc, false, true, false);
             } else {
               const desc = description.trim().toLowerCase();
-              await open(false, desc,desc === genDescription && desc !== DEFAULT_MNEMONIC, false, true);
+              await open(false, desc,desc === genDescription, false, true);
             }
           }}>
             Open wallet
