@@ -1,7 +1,7 @@
 // Copyright 2019 The Bytecoin developers.
 // Licensed under the GNU Affero General Public License, version 3.
 
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {CSSTransition} from 'react-transition-group';
 import * as sync from './lib/sync';
 import * as util from './lib/util';
@@ -67,6 +67,12 @@ export const Controls = React.memo((props: sync.IStatus & sync.IBalance & {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [drawerType, setDrawerType] = useState(DrawerType.None);
   const [nextDrawerType, setNextDrawerType] = useState(DrawerType.None);
+
+  useEffect(() => {
+    if (!initializing && !syncing && !props.viewOnly && props.addresses.length === 1 && props.spendable === 0 && props.lockedOrUnconfirmed === 0) {
+      setDrawerType(DrawerType.Receive);
+    }
+  }, [initializing, syncing, props.viewOnly, props.addresses.length, props.spendable, props.lockedOrUnconfirmed]);
 
   const transitionDrawer = (t: DrawerType) => {
     if (drawerType === DrawerType.None) {
