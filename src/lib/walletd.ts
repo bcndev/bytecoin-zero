@@ -27,7 +27,7 @@ export class Walletd {
   private filename = '';
 
   private constructor(bytecoindAddr: string) {
-    cn_walletd_start([`--bytecoind-remote-address=${bytecoindAddr}`]);
+    cn_walletd_start([`--bytecoind-remote-address=${bytecoindAddr}`, '--secrets-via-api']);
   }
 
   static async create(bytecoindAddr: string, isFile: boolean, description: string, timestamp: number): Promise<Walletd> {
@@ -80,6 +80,10 @@ export class Walletd {
 
   getStatus(req: IGetStatusReq): Promise<IGetStatusResp> {
     return this.rpc('get_status', req);
+  }
+
+  getWalletInfo(req: IGetWalletInfoReq): Promise<IGetWalletInfoResp> {
+    return this.rpc('get_wallet_info', req);
   }
 
   getBalance(req: IGetBalanceReq): Promise<IGetBalanceResp> {
@@ -260,6 +264,24 @@ export interface IGetStatusResp {
   readonly next_block_effective_median_size: number;
   readonly recommended_fee_per_byte: number;
   readonly recommended_max_transaction_size: number;
+}
+
+export interface IGetWalletInfoReq {
+  need_secrets?: boolean;
+}
+
+export interface IGetWalletInfoResp {
+  readonly view_only: boolean;
+  readonly wallet_type: string;
+  readonly can_view_outgoing_addresses: boolean;
+  readonly has_view_secret_key: boolean;
+  readonly creation_timestamp: number;
+  readonly first_address: string;
+  readonly total_address_count: number;
+  readonly net: string;
+  readonly secret_view_key: string;
+  readonly public_view_key: string;
+  readonly mnemonic: string;
 }
 
 export interface IGetBalanceReq {
