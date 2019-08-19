@@ -59,7 +59,7 @@ const ReceiveForm = React.memo((props: {
             </div>
             <div className={styles.addressData}>
               <div className={styles.addressText}>
-                <span className={styles.addressOurs} role='img' aria-label='wallet address'>&#128091;</span> {addr.address}
+                {addr.address}
               </div>
             </div>
             { canShare &&
