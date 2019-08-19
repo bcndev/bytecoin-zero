@@ -60,25 +60,14 @@ const OpenForm = React.memo((props: {onOpen: (isFile: boolean, desc: string, isN
     setDescriptionValid(true);
   };
 
-  const open = async (isFile: boolean, desc: string, isNew: boolean, viewOnly: boolean, approve: boolean) => {
+  const open = async (isFile: boolean, desc: string, isNew: boolean, viewOnly: boolean) => {
     if (opening) {
       return;
     }
 
     setOpening(true);
-    await doOpen(isFile, desc, isNew, viewOnly, approve);
-    setOpening(false);
-  };
-
-  const doOpen = async (isFile: boolean, desc: string, isNew: boolean, viewOnly: boolean, approve: boolean) => {
-    if (approve) {
-      const ok = await util.bioApprove('Bytecoin Zero', 'bytecoin-zero-user', 'Bytecoin Zero User');
-      if (!ok) {
-        return;
-      }
-    }
-
     props.onOpen(isFile, desc, isNew, viewOnly);
+    setOpening(false);
   };
 
   return (
@@ -116,10 +105,10 @@ const OpenForm = React.memo((props: {onOpen: (isFile: boolean, desc: string, isN
             const audit = auditPattern.test(description.trim());
             if (audit) {
               const desc = description.trim();
-              await open(false, desc, false, true, false);
+              await open(false, desc, false, true);
             } else {
               const desc = description.trim().toLowerCase();
-              await open(false, desc,desc === genDescription, false, true);
+              await open(false, desc,desc === genDescription, false);
             }
           }}>
             Open wallet
@@ -132,7 +121,7 @@ const OpenForm = React.memo((props: {onOpen: (isFile: boolean, desc: string, isN
           existingWallets.map(info =>
             <div key={info.filename} className={styles.walletFile} onClick={async () => {
               const desc = info.filename;
-              await open(true, desc, false, info.viewOnly, true);
+              await open(true, desc, false, info.viewOnly);
             }}>
               <div className={styles.avatar}>
                 <Avatar message={info.firstAddress}/>
