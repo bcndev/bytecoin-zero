@@ -90,7 +90,7 @@ export const Controls = React.memo((props: sync.IStatus & sync.IBalance & {
     <div className={styles.controls}>
       <CSSTransition in={settingsOpen} mountOnEnter={true} timeout={300} classNames='balance-drawer-form-up'>
         <div className={styles.drawer}>
-          <SettingsForm topBlockHeight={props.topBlockHeight} topKnownBlockHeight={props.topKnownBlockHeight} topBlockTime={props.topBlockTime} dismiss={() => setSettingsOpen(false)}/>
+          <SettingsForm viewOnly={props.viewOnly} topBlockHeight={props.topBlockHeight} topKnownBlockHeight={props.topKnownBlockHeight} topBlockTime={props.topBlockTime} dismiss={() => setSettingsOpen(false)}/>
         </div>
       </CSSTransition>
       <div className={styles.main}>

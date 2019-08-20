@@ -11,6 +11,7 @@ import NoSleep from 'nosleep.js';
 const dayMS = 60 * 60 * 24 * 1000;
 
 const SettingsForm = React.memo((props: {
+  viewOnly: boolean,
   topBlockHeight: number,
   topKnownBlockHeight: number,
   topBlockTime: Date,
@@ -45,10 +46,41 @@ const SettingsForm = React.memo((props: {
     }
   };
 
+  const exportMnemonic = async () => {
+    if (wallet === null)  {
+      alert('Wallet closed');
+      return;
+    }
+
+    const [resp, err] = await util.try_(wallet.getWalletInfo({
+      need_secrets: true,
+    }));
+    if (resp === undefined) {
+      alert(`Failed to get wallet info: ${err}`);
+      return;
+    }
+
+    const w = window.open();
+    if (w === null) {
+      alert('Failed to open window with mnemonic text');
+      return;
+    }
+
+    w.document.write(`<code style="word-break:break-all">${resp.first_address}</code><br/><br/><code>${resp.mnemonic}</code>`);
+    w.print();
+    w.close();
+  };
+
   return (
     <div className={styles.settingsForm}>
       <div className={styles.noSleepGroup}>
         <input type='checkbox' id='noSleep' onChange={(e) => turnNoSleep(e.target.checked)}/> <label htmlFor='noSleep'>Prevent device sleep during sync</label>
+      </div>
+
+      <div className={styles.exportMnemonicGroup}>
+        <button className='link-like' onClick={exportMnemonic} disabled={props.viewOnly}>
+          Export mnemonic
+        </button> — print or save as PDF
       </div>
 
       <div className={styles.controls}>
