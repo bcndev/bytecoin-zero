@@ -88,8 +88,8 @@ const SettingsForm = React.memo((props: {
           Close wallet
         </button>
 
-        <button className={styles.cancel} onClick={props.dismiss}>
-          Cancel
+        <button className={styles.dismiss} onClick={props.dismiss}>
+          OK
         </button>
       </div>
     </div>

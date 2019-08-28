@@ -78,8 +78,8 @@ const ReceiveForm = React.memo((props: {
           Add address
         </button>
 
-        <button className={styles.cancel} onClick={props.dismiss}>
-          Done
+        <button className={styles.dismiss} onClick={props.dismiss}>
+          OK
         </button>
       </div>
     </div>
