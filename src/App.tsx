@@ -34,7 +34,7 @@ const App = React.memo(() => {
       </SwitchTransition>
 
       <div className={styles.footer}>
-        © 2019 The Bytecoin developers · <a href='https://github.com/bcndev/bytecoin-zero/blob/master/doc/index.md' target='_blank' rel='noreferrer noopener'>Documentation</a> · <a href={`https://github.com/bcndev/bytecoin-zero/tree/${process.env.REACT_APP_GIT_SHA}`} target='_blank' rel='noreferrer noopener'>Code</a>
+        © 2019 The Bytecoin developers · <a href={`https://github.com/bcndev/bytecoin-zero/tree/${process.env.REACT_APP_GIT_SHA}`} target='_blank' rel='noreferrer noopener'>Code</a> · <a href='https://github.com/bcndev/bytecoin-zero/issues' target='_blank' rel='noreferrer noopener'>Issues</a>
       </div>
       <div className={styles.warning}>
         Unstable development version. For testing only.
