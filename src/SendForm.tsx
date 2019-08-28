@@ -31,14 +31,7 @@ const SendForm = React.memo((props: {dismiss: () => void}) => {
   };
 
   const doSend = async () => {
-    const approve = window.confirm(`Send ${util.formatBCN(amount)} to ${address}?`);
-    if (!approve) {
-      return;
-    }
-
-    // TODO derive username from wallet
-    const ok = await util.bioApprove('Bytecoin Zero', 'bytecoin-zero-user', 'Bytecoin Zero User');
-    if (!ok || !wallet) {
+    if (!wallet) {
       return;
     }
 
@@ -55,6 +48,17 @@ const SendForm = React.memo((props: {dismiss: () => void}) => {
     }));
     if (txResp === undefined) {
       alert(`Failed to create transaction: ${errCreate}`);
+      return;
+    }
+
+    const approve = window.confirm(`Send ${util.formatBCN(amount)} to ${address}?`);
+    if (!approve) {
+      return;
+    }
+
+    // TODO derive username from wallet
+    const ok = await util.bioApprove('Bytecoin Zero', 'bytecoin-zero-user', 'Bytecoin Zero User');
+    if (!ok) {
       return;
     }
 
