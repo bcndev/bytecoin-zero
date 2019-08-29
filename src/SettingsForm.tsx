@@ -68,8 +68,10 @@ const SettingsForm = React.memo((props: {
     }
 
     w.document.write(`<code style="word-break:break-all">${resp.first_address}</code><br/><br/><code>${resp.mnemonic}</code>`);
+    w.addEventListener('afterprint', () => {
+      w.close();
+    });
     w.print();
-    w.close();
   };
 
   return (
