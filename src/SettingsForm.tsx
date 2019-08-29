@@ -67,10 +67,14 @@ const SettingsForm = React.memo((props: {
       return;
     }
 
-    w.document.write(`<code style="word-break:break-all">${resp.first_address}</code><br/><br/><code>${resp.mnemonic}</code>`);
-    w.addEventListener('afterprint', () => {
-      w.close();
-    });
+    w.document.write(`
+    <html lang="en">
+        <head><title>Bytecoin Mnemonic Backup</title></head>
+        <body onafterprint="self.close()">
+            <code style="word-break:break-all">${resp.first_address}</code><br/><br/><code>${resp.mnemonic}</code>
+        </body>
+    </html>
+    `);
     w.print();
   };
 
