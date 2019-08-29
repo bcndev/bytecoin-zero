@@ -52,17 +52,18 @@ const SettingsForm = React.memo((props: {
       return;
     }
 
+    const w = window.open();
+    if (w === null) {
+      alert('Failed to open window with mnemonic text');
+      return;
+    }
+
     const [resp, err] = await util.try_(wallet.getWalletInfo({
       need_secrets: true,
     }));
     if (resp === undefined) {
+      w.close();
       alert(`Failed to get wallet info: ${err}`);
-      return;
-    }
-
-    const w = window.open();
-    if (w === null) {
-      alert('Failed to open window with mnemonic text');
       return;
     }
 
