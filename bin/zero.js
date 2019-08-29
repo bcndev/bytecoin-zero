@@ -53,12 +53,7 @@ var ENVIRONMENT_HAS_NODE = false;
 var ENVIRONMENT_IS_SHELL = false;
 ENVIRONMENT_IS_WEB = typeof window === 'object';
 ENVIRONMENT_IS_WORKER = typeof importScripts === 'function';
-// A web environment like Electron.js can have Node enabled, so we must
-// distinguish between Node-enabled environments and Node environments per se.
-// This will allow the former to do things like mount NODEFS.
-// Extended check using process.versions fixes issue #8816.
-// (Also makes redundant the original check that 'require' is a function.)
-ENVIRONMENT_HAS_NODE = typeof process === 'object' && typeof process.versions === 'object' && typeof process.versions.node === 'string';
+ENVIRONMENT_HAS_NODE = typeof process === 'object' && typeof require === 'function';
 ENVIRONMENT_IS_NODE = ENVIRONMENT_HAS_NODE && !ENVIRONMENT_IS_WEB && !ENVIRONMENT_IS_WORKER;
 ENVIRONMENT_IS_SHELL = !ENVIRONMENT_IS_WEB && !ENVIRONMENT_IS_NODE && !ENVIRONMENT_IS_WORKER;
 
@@ -85,12 +80,6 @@ function locateFile(path) {
   }
 }
 
-// Hooks that are implemented differently in different runtime environments.
-var read_,
-    readAsync,
-    readBinary,
-    setWindowTitle;
-
 if (ENVIRONMENT_IS_NODE) {
   scriptDirectory = __dirname + '/';
 
@@ -99,7 +88,7 @@ if (ENVIRONMENT_IS_NODE) {
   var nodeFS;
   var nodePath;
 
-  read_ = function shell_read(filename, binary) {
+  Module['read'] = function shell_read(filename, binary) {
     var ret;
       if (!nodeFS) nodeFS = require('fs');
       if (!nodePath) nodePath = require('path');
@@ -108,8 +97,8 @@ if (ENVIRONMENT_IS_NODE) {
     return binary ? ret : ret.toString();
   };
 
-  readBinary = function readBinary(filename) {
-    var ret = read_(filename, true);
+  Module['readBinary'] = function readBinary(filename) {
+    var ret = Module['read'](filename, true);
     if (!ret.buffer) {
       ret = new Uint8Array(ret);
     }
@@ -147,12 +136,12 @@ if (ENVIRONMENT_IS_SHELL) {
 
 
   if (typeof read != 'undefined') {
-    read_ = function shell_read(f) {
+    Module['read'] = function shell_read(f) {
       return read(f);
     };
   }
 
-  readBinary = function readBinary(f) {
+  Module['readBinary'] = function readBinary(f) {
     var data;
     if (typeof readbuffer === 'function') {
       return new Uint8Array(readbuffer(f));
@@ -191,7 +180,7 @@ if (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER) {
   }
 
 
-  read_ = function shell_read(url) {
+  Module['read'] = function shell_read(url) {
       var xhr = new XMLHttpRequest();
       xhr.open('GET', url, false);
       xhr.send(null);
@@ -199,7 +188,7 @@ if (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER) {
   };
 
   if (ENVIRONMENT_IS_WORKER) {
-    readBinary = function readBinary(url) {
+    Module['readBinary'] = function readBinary(url) {
         var xhr = new XMLHttpRequest();
         xhr.open('GET', url, false);
         xhr.responseType = 'arraybuffer';
@@ -208,7 +197,7 @@ if (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER) {
     };
   }
 
-  readAsync = function readAsync(url, onload, onerror) {
+  Module['readAsync'] = function readAsync(url, onload, onerror) {
     var xhr = new XMLHttpRequest();
     xhr.open('GET', url, true);
     xhr.responseType = 'arraybuffer';
@@ -223,7 +212,7 @@ if (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER) {
     xhr.send(null);
   };
 
-  setWindowTitle = function(title) { document.title = title };
+  Module['setWindowTitle'] = function(title) { document.title = title };
 } else
 {
   throw new Error('environment detection error');
@@ -249,23 +238,10 @@ for (key in moduleOverrides) {
 moduleOverrides = undefined;
 
 // perform assertions in shell.js after we set up out() and err(), as otherwise if an assertion fails it cannot print the message
-// Assertions on removed incoming Module JS APIs.
 assert(typeof Module['memoryInitializerPrefixURL'] === 'undefined', 'Module.memoryInitializerPrefixURL option was removed, use Module.locateFile instead');
 assert(typeof Module['pthreadMainPrefixURL'] === 'undefined', 'Module.pthreadMainPrefixURL option was removed, use Module.locateFile instead');
 assert(typeof Module['cdInitializerPrefixURL'] === 'undefined', 'Module.cdInitializerPrefixURL option was removed, use Module.locateFile instead');
 assert(typeof Module['filePackagePrefixURL'] === 'undefined', 'Module.filePackagePrefixURL option was removed, use Module.locateFile instead');
-assert(typeof Module['read'] === 'undefined', 'Module.read option was removed (modify read_ in JS)');
-assert(typeof Module['readAsync'] === 'undefined', 'Module.readAsync option was removed (modify readAsync in JS)');
-assert(typeof Module['readBinary'] === 'undefined', 'Module.readBinary option was removed (modify readBinary in JS)');
-assert(typeof Module['setWindowTitle'] === 'undefined', 'Module.setWindowTitle option was removed (modify setWindowTitle in JS)');
-// Assertions on removed outgoing Module JS APIs.
-Object.defineProperty(Module, 'read', { get: function() { abort('Module.read has been replaced with plain read') } });
-Object.defineProperty(Module, 'readAsync', { get: function() { abort('Module.readAsync has been replaced with plain readAsync') } });
-Object.defineProperty(Module, 'readBinary', { get: function() { abort('Module.readBinary has been replaced with plain readBinary') } });
-// TODO enable when SDL2 is fixed Object.defineProperty(Module, 'setWindowTitle', { get: function() { abort('Module.setWindowTitle has been replaced with plain setWindowTitle') } });
-
-
-// TODO remove when SDL2 is fixed; also add the above assertion
 
 
 
@@ -520,11 +496,11 @@ var tempRet0 = 0;
 
 var setTempRet0 = function(value) {
   tempRet0 = value;
-};
+}
 
 var getTempRet0 = function() {
   return tempRet0;
-};
+}
 
 function getCompilerSetting(name) {
   throw 'You must build with -s RETAIN_COMPILER_SETTINGS=1 for getCompilerSetting or emscripten_get_compiler_setting to work';
@@ -563,25 +539,6 @@ if (typeof WebAssembly !== 'object') {
 }
 
 
-// In MINIMAL_RUNTIME, setValue() and getValue() are only available when building with safe heap enabled, for heap safety checking.
-// In traditional runtime, setValue() and getValue() are always available (although their use is highly discouraged due to perf penalties)
-
-/** @type {function(number, number, string, boolean=)} */
-function setValue(ptr, value, type, noSafe) {
-  type = type || 'i8';
-  if (type.charAt(type.length-1) === '*') type = 'i32'; // pointers are 32-bit
-    switch(type) {
-      case 'i1': HEAP8[((ptr)>>0)]=value; break;
-      case 'i8': HEAP8[((ptr)>>0)]=value; break;
-      case 'i16': HEAP16[((ptr)>>1)]=value; break;
-      case 'i32': HEAP32[((ptr)>>2)]=value; break;
-      case 'i64': (tempI64 = [value>>>0,(tempDouble=value,(+(Math_abs(tempDouble))) >= 1.0 ? (tempDouble > 0.0 ? ((Math_min((+(Math_floor((tempDouble)/4294967296.0))), 4294967295.0))|0)>>>0 : (~~((+(Math_ceil((tempDouble - +(((~~(tempDouble)))>>>0))/4294967296.0)))))>>>0) : 0)],HEAP32[((ptr)>>2)]=tempI64[0],HEAP32[(((ptr)+(4))>>2)]=tempI64[1]); break;
-      case 'float': HEAPF32[((ptr)>>2)]=value; break;
-      case 'double': HEAPF64[((ptr)>>3)]=value; break;
-      default: abort('invalid type for setValue: ' + type);
-    }
-}
-
 /** @type {function(number, string, boolean=)} */
 function getValue(ptr, type, noSafe) {
   type = type || 'i8';
@@ -598,7 +555,6 @@ function getValue(ptr, type, noSafe) {
     }
   return null;
 }
-
 
 
 
@@ -690,6 +646,22 @@ function cwrap(ident, returnType, argTypes, opts) {
   return function() {
     return ccall(ident, returnType, argTypes, arguments, opts);
   }
+}
+
+/** @type {function(number, number, string, boolean=)} */
+function setValue(ptr, value, type, noSafe) {
+  type = type || 'i8';
+  if (type.charAt(type.length-1) === '*') type = 'i32'; // pointers are 32-bit
+    switch(type) {
+      case 'i1': HEAP8[((ptr)>>0)]=value; break;
+      case 'i8': HEAP8[((ptr)>>0)]=value; break;
+      case 'i16': HEAP16[((ptr)>>1)]=value; break;
+      case 'i32': HEAP32[((ptr)>>2)]=value; break;
+      case 'i64': (tempI64 = [value>>>0,(tempDouble=value,(+(Math_abs(tempDouble))) >= 1.0 ? (tempDouble > 0.0 ? ((Math_min((+(Math_floor((tempDouble)/4294967296.0))), 4294967295.0))|0)>>>0 : (~~((+(Math_ceil((tempDouble - +(((~~(tempDouble)))>>>0))/4294967296.0)))))>>>0) : 0)],HEAP32[((ptr)>>2)]=tempI64[0],HEAP32[(((ptr)+(4))>>2)]=tempI64[1]); break;
+      case 'float': HEAPF32[((ptr)>>2)]=value; break;
+      case 'double': HEAPF64[((ptr)>>3)]=value; break;
+      default: abort('invalid type for setValue: ' + type);
+    }
 }
 
 var ALLOC_NORMAL = 0; // Tries to use _malloc()
@@ -1272,11 +1244,11 @@ function updateGlobalBufferViews() {
 
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 122784,
+    STACK_BASE = 125440,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 5365664,
-    DYNAMIC_BASE = 5365664,
-    DYNAMICTOP_PTR = 122752;
+    STACK_MAX = 5368320,
+    DYNAMIC_BASE = 5368320,
+    DYNAMICTOP_PTR = 125408;
 
 assert(STACK_BASE % 16 === 0, 'stack must start aligned');
 assert(DYNAMIC_BASE % 16 === 0, 'heap must start aligned');
@@ -1299,24 +1271,25 @@ assert(typeof Int32Array !== 'undefined' && typeof Float64Array !== 'undefined' 
 
 
 
-  if (Module['wasmMemory']) {
-    wasmMemory = Module['wasmMemory'];
-  } else {
-    wasmMemory = new WebAssembly.Memory({
-      'initial': INITIAL_TOTAL_MEMORY / WASM_PAGE_SIZE
-    });
+
+// Use a provided buffer, if there is one, or else allocate a new one
+if (Module['buffer']) {
+  buffer = Module['buffer'];
+  assert(buffer.byteLength === INITIAL_TOTAL_MEMORY, 'provided buffer should be ' + INITIAL_TOTAL_MEMORY + ' bytes, but it is ' + buffer.byteLength);
+} else {
+  // Use a WebAssembly memory where available
+  if (typeof WebAssembly === 'object' && typeof WebAssembly.Memory === 'function') {
+    assert(INITIAL_TOTAL_MEMORY % WASM_PAGE_SIZE === 0);
+    wasmMemory = new WebAssembly.Memory({ 'initial': INITIAL_TOTAL_MEMORY / WASM_PAGE_SIZE });
+    buffer = wasmMemory.buffer;
+  } else
+  {
+    buffer = new ArrayBuffer(INITIAL_TOTAL_MEMORY);
   }
-
-
-if (wasmMemory) {
-  buffer = wasmMemory.buffer;
+  assert(buffer.byteLength === INITIAL_TOTAL_MEMORY);
 }
-
-// If the user provides an incorrect length, just use that length instead rather than providing the user to
-// specifically provide the memory length with Module['TOTAL_MEMORY'].
-INITIAL_TOTAL_MEMORY = buffer.byteLength;
-assert(INITIAL_TOTAL_MEMORY % WASM_PAGE_SIZE === 0);
 updateGlobalBufferViews();
+
 
 HEAP32[DYNAMICTOP_PTR>>2] = DYNAMIC_BASE;
 
@@ -1329,13 +1302,10 @@ function writeStackCookie() {
 }
 
 function checkStackCookie() {
-  var cookie1 = HEAPU32[(STACK_MAX >> 2)-1];
-  var cookie2 = HEAPU32[(STACK_MAX >> 2)-2];
-  if (cookie1 != 0x02135467 || cookie2 != 0x89BACDFE) {
-    abort('Stack overflow! Stack cookie has been overwritten, expected hex dwords 0x89BACDFE and 0x02135467, but received 0x' + cookie2.toString(16) + ' ' + cookie1.toString(16));
+  if (HEAPU32[(STACK_MAX >> 2)-1] != 0x02135467 || HEAPU32[(STACK_MAX >> 2)-2] != 0x89BACDFE) {
+    abort('Stack overflow! Stack cookie has been overwritten, expected hex dwords 0x89BACDFE and 0x02135467, but received 0x' + HEAPU32[(STACK_MAX >> 2)-2].toString(16) + ' ' + HEAPU32[(STACK_MAX >> 2)-1].toString(16));
   }
   // Also test the global address 0 for integrity.
-  // We don't do this with ASan because ASan does its own checks for this.
   if (HEAP32[0] !== 0x63736d65 /* 'emsc' */) abort('Runtime error: The application has corrupted its heap memory area (address zero)!');
 }
 
@@ -1393,9 +1363,9 @@ function preRun() {
   callRuntimeCallbacks(__ATPRERUN__);
 }
 
-function initRuntime() {
+function ensureInitRuntime() {
   checkStackCookie();
-  assert(!runtimeInitialized);
+  if (runtimeInitialized) return;
   runtimeInitialized = true;
   
   callRuntimeCallbacks(__ATINIT__);
@@ -1631,8 +1601,8 @@ function getBinary() {
     if (Module['wasmBinary']) {
       return new Uint8Array(Module['wasmBinary']);
     }
-    if (readBinary) {
-      return readBinary(wasmBinaryFile);
+    if (Module['readBinary']) {
+      return Module['readBinary'](wasmBinaryFile);
     } else {
       throw "both async and sync fetching of the wasm failed";
     }
@@ -1661,8 +1631,6 @@ function getBinaryPromise() {
   });
 }
 
-
-
 // Create the wasm instance.
 // Receives the wasm imports, returns the exports.
 function createWasm(env) {
@@ -1688,7 +1656,6 @@ function createWasm(env) {
   }
   addRunDependency('wasm-instantiate');
 
-
   // Async compilation can be confusing when an error on the page overwrites Module
   // (for example, if the order of elements is wrong, and the one defining Module is
   // later), so we save Module and check it later.
@@ -1702,7 +1669,6 @@ function createWasm(env) {
       // When the regression is fixed, can restore the above USE_PTHREADS-enabled path.
     receiveInstance(output['instance']);
   }
-
 
   function instantiateArrayBuffer(receiver) {
     return getBinaryPromise().then(function(binary) {
@@ -1719,16 +1685,14 @@ function createWasm(env) {
         typeof WebAssembly.instantiateStreaming === 'function' &&
         !isDataURI(wasmBinaryFile) &&
         typeof fetch === 'function') {
-      fetch(wasmBinaryFile, { credentials: 'same-origin' }).then(function (response) {
-        return WebAssembly.instantiateStreaming(response, info)
-          .then(receiveInstantiatedSource, function(reason) {
-            // We expect the most common failure cause to be a bad MIME type for the binary,
-            // in which case falling back to ArrayBuffer instantiation should work.
-            err('wasm streaming compile failed: ' + reason);
-            err('falling back to ArrayBuffer instantiation');
-            instantiateArrayBuffer(receiveInstantiatedSource);
-          });
-      });
+      return WebAssembly.instantiateStreaming(fetch(wasmBinaryFile, { credentials: 'same-origin' }), info)
+        .then(receiveInstantiatedSource, function(reason) {
+          // We expect the most common failure cause to be a bad MIME type for the binary,
+          // in which case falling back to ArrayBuffer instantiation should work.
+          err('wasm streaming compile failed: ' + reason);
+          err('falling back to ArrayBuffer instantiation');
+          instantiateArrayBuffer(receiveInstantiatedSource);
+        });
     } else {
       return instantiateArrayBuffer(receiveInstantiatedSource);
     }
@@ -1738,8 +1702,7 @@ function createWasm(env) {
   // to any other async startup actions they are performing.
   if (Module['instantiateWasm']) {
     try {
-      var exports = Module['instantiateWasm'](info, receiveInstance);
-      return exports;
+      return Module['instantiateWasm'](info, receiveInstance);
     } catch(e) {
       err('Module.instantiateWasm callback failed with error: ' + e);
       return false;
@@ -1760,8 +1723,8 @@ Module['asm'] = function(global, env, providedBuffer) {
   ;
   // import table
   env['table'] = wasmTable = new WebAssembly.Table({
-    'initial': 2300,
-    'maximum': 2300,
+    'initial': 2428,
+    'maximum': 2428,
     'element': 'anyfunc'
   });
   // With the wasm backend __memory_base and __table_base and only needed for
@@ -1774,10 +1737,6 @@ Module['asm'] = function(global, env, providedBuffer) {
   assert(exports, 'binaryen setup failed (no wasm support?)');
   return exports;
 };
-
-// Globals used by JS i64 conversions
-var tempDouble;
-var tempI64;
 
 // === Body ===
 
@@ -1800,7 +1759,7 @@ function _emscripten_asm_const_iiiiiiiiiii(code, a0, a1, a2, a3, a4, a5, a6, a7,
 
 
 
-// STATICTOP = STATIC_BASE + 121760;
+// STATICTOP = STATIC_BASE + 124416;
 /* global initializers */  __ATINIT__.push({ func: function() { globalCtors() } });
 
 
@@ -1811,7 +1770,7 @@ function _emscripten_asm_const_iiiiiiiiiii(code, a0, a1, a2, a3, a4, a5, a6, a7,
 
 
 /* no memory initializer */
-var tempDoublePtr = 122768
+var tempDoublePtr = 125424
 assert(tempDoublePtr % 8 == 0);
 
 function copyTempFloat(ptr) { // functions, because inlining this code increases code size too much
@@ -1852,8 +1811,6 @@ function copyTempDouble(ptr) {
         ENV['PWD'] = '/';
         ENV['HOME'] = '/home/web_user';
         ENV['LANG'] = 'C.UTF-8';
-        // Browser language detection #8751
-        ENV['LANG'] = ((typeof navigator === 'object' && navigator.languages && navigator.languages[0]) || 'C').replace('-', '_') + '.UTF-8';
         ENV['_'] = Module['thisProgram'];
         // Allocate memory.
         poolPtr = getMemory(TOTAL_ENV_SIZE);
@@ -1895,100 +1852,141 @@ function copyTempDouble(ptr) {
     }
 
   
-  var ___exception_infos={};
-  
-  var ___exception_caught= [];
-  
-  function ___exception_addRef(ptr) {
-      if (!ptr) return;
-      var info = ___exception_infos[ptr];
-      info.refcount++;
-    }
-  
-  function ___exception_deAdjust(adjusted) {
-      if (!adjusted || ___exception_infos[adjusted]) return adjusted;
-      for (var key in ___exception_infos) {
-        var ptr = +key; // the iteration key is a string, and if we throw this, it must be an integer as that is what we look for
-        var adj = ___exception_infos[ptr].adjusted;
-        var len = adj.length;
-        for (var i = 0; i < len; i++) {
-          if (adj[i] === adjusted) {
-            return ptr;
-          }
-        }
-      }
-      return adjusted;
-    }function ___cxa_begin_catch(ptr) {
-      var info = ___exception_infos[ptr];
-      if (info && !info.caught) {
-        info.caught = true;
-        __ZSt18uncaught_exceptionv.uncaught_exceptions--;
-      }
-      if (info) info.rethrown = false;
-      ___exception_caught.push(ptr);
-      ___exception_addRef(___exception_deAdjust(ptr));
-      return ptr;
-    }
-
-  function ___cxa_current_primary_exception() {
-      var ret = ___exception_caught[___exception_caught.length-1] || 0;
-      if (ret) ___exception_addRef(___exception_deAdjust(ret));
-      return ret;
-    }
-
-  
   
   function ___cxa_free_exception(ptr) {
       try {
         return _free(ptr);
-      } catch(e) {
+      } catch(e) { // XXX FIXME
         err('exception during cxa_free_exception: ' + e);
       }
-    }function ___exception_decRef(ptr) {
-      if (!ptr) return;
-      var info = ___exception_infos[ptr];
-      assert(info.refcount > 0);
-      info.refcount--;
-      // A rethrown exception can reach refcount 0; it must not be discarded
-      // Its next handler will clear the rethrown flag and addRef it, prior to
-      // final decRef and destruction here
-      if (info.refcount === 0 && !info.rethrown) {
-        if (info.destructor) {
-          Module['dynCall_vi'](info.destructor, ptr);
+    }var EXCEPTIONS={last:0,caught:[],infos:{},deAdjust:function (adjusted) {
+        if (!adjusted || EXCEPTIONS.infos[adjusted]) return adjusted;
+        for (var key in EXCEPTIONS.infos) {
+          var ptr = +key; // the iteration key is a string, and if we throw this, it must be an integer as that is what we look for
+          var adj = EXCEPTIONS.infos[ptr].adjusted;
+          var len = adj.length;
+          for (var i = 0; i < len; i++) {
+            if (adj[i] === adjusted) {
+              return ptr;
+            }
+          }
         }
-        delete ___exception_infos[ptr];
-        ___cxa_free_exception(ptr);
+        return adjusted;
+      },addRef:function (ptr) {
+        if (!ptr) return;
+        var info = EXCEPTIONS.infos[ptr];
+        info.refcount++;
+      },decRef:function (ptr) {
+        if (!ptr) return;
+        var info = EXCEPTIONS.infos[ptr];
+        assert(info.refcount > 0);
+        info.refcount--;
+        // A rethrown exception can reach refcount 0; it must not be discarded
+        // Its next handler will clear the rethrown flag and addRef it, prior to
+        // final decRef and destruction here
+        if (info.refcount === 0 && !info.rethrown) {
+          if (info.destructor) {
+            Module['dynCall_vi'](info.destructor, ptr);
+          }
+          delete EXCEPTIONS.infos[ptr];
+          ___cxa_free_exception(ptr);
+        }
+      },clearRef:function (ptr) {
+        if (!ptr) return;
+        var info = EXCEPTIONS.infos[ptr];
+        info.refcount = 0;
+      }};function ___cxa_begin_catch(ptr) {
+      var info = EXCEPTIONS.infos[ptr];
+      if (info && !info.caught) {
+        info.caught = true;
+        __ZSt18uncaught_exceptionv.uncaught_exception--;
       }
-    }function ___cxa_decrement_exception_refcount(ptr) {
-      ___exception_decRef(___exception_deAdjust(ptr));
+      if (info) info.rethrown = false;
+      EXCEPTIONS.caught.push(ptr);
+      EXCEPTIONS.addRef(EXCEPTIONS.deAdjust(ptr));
+      return ptr;
     }
 
-  
-  var ___exception_last=0;
+  function ___cxa_current_primary_exception() {
+      var ret = EXCEPTIONS.caught[EXCEPTIONS.caught.length-1] || 0;
+      if (ret) EXCEPTIONS.addRef(EXCEPTIONS.deAdjust(ret));
+      return ret;
+    }
+
+  function ___cxa_decrement_exception_refcount(ptr) {
+      EXCEPTIONS.decRef(EXCEPTIONS.deAdjust(ptr));
+    }
+
   
    function ___cxa_end_catch() {
       // Clear state flag.
       _setThrew(0);
       // Call destructor if one is registered then clear it.
-      var ptr = ___exception_caught.pop();
+      var ptr = EXCEPTIONS.caught.pop();
       if (ptr) {
-        ___exception_decRef(___exception_deAdjust(ptr));
-        ___exception_last = 0; // XXX in decRef?
+        EXCEPTIONS.decRef(EXCEPTIONS.deAdjust(ptr));
+        EXCEPTIONS.last = 0; // XXX in decRef?
       }
+    }
+
+  function ___cxa_find_matching_catch_2() {
+          return ___cxa_find_matching_catch.apply(null, arguments);
+        }
+
+  function ___cxa_find_matching_catch_3() {
+          return ___cxa_find_matching_catch.apply(null, arguments);
+        }
+
+  function ___cxa_find_matching_catch_4() {
+          return ___cxa_find_matching_catch.apply(null, arguments);
+        }
+
+  function ___cxa_find_matching_catch_5() {
+          return ___cxa_find_matching_catch.apply(null, arguments);
+        }
+
+
+  function ___cxa_increment_exception_refcount(ptr) {
+      EXCEPTIONS.addRef(EXCEPTIONS.deAdjust(ptr));
+    }
+
+  function ___cxa_pure_virtual() {
+      ABORT = true;
+      throw 'Pure virtual function called!';
+    }
+
+  function ___cxa_rethrow() {
+      var ptr = EXCEPTIONS.caught.pop();
+      ptr = EXCEPTIONS.deAdjust(ptr);
+      if (!EXCEPTIONS.infos[ptr].rethrown) {
+        // Only pop if the corresponding push was through rethrow_primary_exception
+        EXCEPTIONS.caught.push(ptr)
+        EXCEPTIONS.infos[ptr].rethrown = true;
+      }
+      EXCEPTIONS.last = ptr;
+      throw ptr;
+    }
+
+  function ___cxa_rethrow_primary_exception(ptr) {
+      if (!ptr) return;
+      ptr = EXCEPTIONS.deAdjust(ptr);
+      EXCEPTIONS.caught.push(ptr);
+      EXCEPTIONS.infos[ptr].rethrown = true;
+      ___cxa_rethrow();
     }
 
   
   
   function ___resumeException(ptr) {
-      if (!___exception_last) { ___exception_last = ptr; }
+      if (!EXCEPTIONS.last) { EXCEPTIONS.last = ptr; }
       throw ptr;
     }function ___cxa_find_matching_catch() {
-      var thrown = ___exception_last;
+      var thrown = EXCEPTIONS.last;
       if (!thrown) {
         // just pass through the null ptr
         return ((setTempRet0(0),0)|0);
       }
-      var info = ___exception_infos[thrown];
+      var info = EXCEPTIONS.infos[thrown];
       var throwntype = info.type;
       if (!throwntype) {
         // just pass through the thrown ptr
@@ -1996,17 +1994,17 @@ function copyTempDouble(ptr) {
       }
       var typeArray = Array.prototype.slice.call(arguments);
   
-      var pointer = ___cxa_is_pointer_type(throwntype);
+      var pointer = Module['___cxa_is_pointer_type'](throwntype);
       // can_catch receives a **, add indirection
-      var buffer = 122736;
-      HEAP32[((buffer)>>2)]=thrown;
-      thrown = buffer;
+      if (!___cxa_find_matching_catch.buffer) ___cxa_find_matching_catch.buffer = _malloc(4);
+      HEAP32[((___cxa_find_matching_catch.buffer)>>2)]=thrown;
+      thrown = ___cxa_find_matching_catch.buffer;
       // The different catch blocks are denoted by different types.
       // Due to inheritance, those types may not precisely match the
       // type of the thrown object. Find one which matches, and
       // return the type of the catch block which should be called.
       for (var i = 0; i < typeArray.length; i++) {
-        if (typeArray[i] && ___cxa_can_catch(typeArray[i], throwntype, thrown)) {
+        if (typeArray[i] && Module['___cxa_can_catch'](typeArray[i], throwntype, thrown)) {
           thrown = HEAP32[((thrown)>>2)]; // undo indirection
           info.adjusted.push(thrown);
           return ((setTempRet0(typeArray[i]),thrown)|0);
@@ -2017,59 +2015,8 @@ function copyTempDouble(ptr) {
       // typeinfo defined. Best-efforts match just in case.
       thrown = HEAP32[((thrown)>>2)]; // undo indirection
       return ((setTempRet0(throwntype),thrown)|0);
-    }
-  Module["___cxa_find_matching_catch"] = ___cxa_find_matching_catch;function ___cxa_find_matching_catch_2(a0,a1
-  /*``*/) {
-  return ___cxa_find_matching_catch(a0,a1);
-  }
-
-  function ___cxa_find_matching_catch_3(a0,a1,a2
-  /*``*/) {
-  return ___cxa_find_matching_catch(a0,a1,a2);
-  }
-
-  function ___cxa_find_matching_catch_4(a0,a1,a2,a3
-  /*``*/) {
-  return ___cxa_find_matching_catch(a0,a1,a2,a3);
-  }
-
-  function ___cxa_find_matching_catch_5(a0,a1,a2,a3,a4
-  /*``*/) {
-  return ___cxa_find_matching_catch(a0,a1,a2,a3,a4);
-  }
-
-
-  function ___cxa_increment_exception_refcount(ptr) {
-      ___exception_addRef(___exception_deAdjust(ptr));
-    }
-
-  function ___cxa_pure_virtual() {
-      ABORT = true;
-      throw 'Pure virtual function called!';
-    }
-
-  function ___cxa_rethrow() {
-      var ptr = ___exception_caught.pop();
-      ptr = ___exception_deAdjust(ptr);
-      if (!___exception_infos[ptr].rethrown) {
-        // Only pop if the corresponding push was through rethrow_primary_exception
-        ___exception_caught.push(ptr);
-        ___exception_infos[ptr].rethrown = true;
-      }
-      ___exception_last = ptr;
-      throw ptr;
-    }
-
-  function ___cxa_rethrow_primary_exception(ptr) {
-      if (!ptr) return;
-      ptr = ___exception_deAdjust(ptr);
-      ___exception_caught.push(ptr);
-      ___exception_infos[ptr].rethrown = true;
-      ___cxa_rethrow();
-    }
-
-  function ___cxa_throw(ptr, type, destructor) {
-      ___exception_infos[ptr] = {
+    }function ___cxa_throw(ptr, type, destructor) {
+      EXCEPTIONS.infos[ptr] = {
         ptr: ptr,
         adjusted: [ptr],
         type: type,
@@ -2078,17 +2025,17 @@ function copyTempDouble(ptr) {
         caught: false,
         rethrown: false
       };
-      ___exception_last = ptr;
+      EXCEPTIONS.last = ptr;
       if (!("uncaught_exception" in __ZSt18uncaught_exceptionv)) {
-        __ZSt18uncaught_exceptionv.uncaught_exceptions = 1;
+        __ZSt18uncaught_exceptionv.uncaught_exception = 1;
       } else {
-        __ZSt18uncaught_exceptionv.uncaught_exceptions++;
+        __ZSt18uncaught_exceptionv.uncaught_exception++;
       }
       throw ptr;
     }
 
-  function ___cxa_uncaught_exceptions() {
-      return __ZSt18uncaught_exceptionv.uncaught_exceptions;
+  function ___cxa_uncaught_exception() {
+      return !!__ZSt18uncaught_exceptionv.uncaught_exception;
     }
 
   function ___gxx_personality_v0() {
@@ -2271,17 +2218,16 @@ function copyTempDouble(ptr) {
   }
   }
 
-  
-  function __emscripten_syscall_munmap(addr, len) {
-      if (addr === -1 || len === 0) {
-        return -22;
-      }
+  function ___syscall91(which, varargs) {SYSCALLS.varargs = varargs;
+  try {
+   // munmap
+      var addr = SYSCALLS.get(), len = SYSCALLS.get();
       // TODO: support unmmap'ing parts of allocations
       var info = SYSCALLS.mappings[addr];
       if (!info) return 0;
       if (len === info.len) {
         var stream = FS.getStream(info.fd);
-        SYSCALLS.doMsync(addr, stream, len, info.flags);
+        SYSCALLS.doMsync(addr, stream, len, info.flags)
         FS.munmap(stream);
         SYSCALLS.mappings[addr] = null;
         if (info.allocated) {
@@ -2289,11 +2235,6 @@ function copyTempDouble(ptr) {
         }
       }
       return 0;
-    }function ___syscall91(which, varargs) {SYSCALLS.varargs = varargs;
-  try {
-   // munmap
-      var addr = SYSCALLS.get(), len = SYSCALLS.get();
-      return __emscripten_syscall_munmap(addr, len);
     } catch (e) {
     if (typeof FS === 'undefined' || !(e instanceof FS.ErrnoError)) abort(e);
     return -e.errno;
@@ -3300,13 +3241,11 @@ function copyTempDouble(ptr) {
         } else {
           // ..., but after that, add smaller increments towards 2GB, which we cannot reach
           newSize = Math.min(alignUp((3 * newSize + 2147483648) / 4, PAGE_MULTIPLE), LIMIT);
-        }
-  
-        if (newSize === oldSize) {
-          warnOnce('Cannot ask for more memory since we reached the practical limit in browsers (which is just below 2GB), so the request would have failed. Requesting only ' + HEAP8.length);
+          if (newSize === oldSize) {
+            warnOnce('Cannot ask for more memory since we reached the practical limit in browsers (which is just below 2GB), so the request would have failed. Requesting only ' + HEAP8.length);
+          }
         }
       }
-  
   
   
       var start = Date.now();
@@ -3395,27 +3334,7 @@ function copyTempDouble(ptr) {
         '%R': '%H:%M',                    // Replaced by the time in 24-hour notation
         '%T': '%H:%M:%S',                 // Replaced by the time
         '%x': '%m/%d/%y',                 // Replaced by the locale's appropriate date representation
-        '%X': '%H:%M:%S',                 // Replaced by the locale's appropriate time representation
-        // Modified Conversion Specifiers
-        '%Ec': '%c',                      // Replaced by the locale's alternative appropriate date and time representation.
-        '%EC': '%C',                      // Replaced by the name of the base year (period) in the locale's alternative representation.
-        '%Ex': '%m/%d/%y',                // Replaced by the locale's alternative date representation.
-        '%EX': '%H:%M:%S',                // Replaced by the locale's alternative time representation.
-        '%Ey': '%y',                      // Replaced by the offset from %EC (year only) in the locale's alternative representation.
-        '%EY': '%Y',                      // Replaced by the full alternative year representation.
-        '%Od': '%d',                      // Replaced by the day of the month, using the locale's alternative numeric symbols, filled as needed with leading zeros if there is any alternative symbol for zero; otherwise, with leading <space> characters.
-        '%Oe': '%e',                      // Replaced by the day of the month, using the locale's alternative numeric symbols, filled as needed with leading <space> characters.
-        '%OH': '%H',                      // Replaced by the hour (24-hour clock) using the locale's alternative numeric symbols.
-        '%OI': '%I',                      // Replaced by the hour (12-hour clock) using the locale's alternative numeric symbols.
-        '%Om': '%m',                      // Replaced by the month using the locale's alternative numeric symbols.
-        '%OM': '%M',                      // Replaced by the minutes using the locale's alternative numeric symbols.
-        '%OS': '%S',                      // Replaced by the seconds using the locale's alternative numeric symbols.
-        '%Ou': '%u',                      // Replaced by the weekday as a number in the locale's alternative representation (Monday=1).
-        '%OU': '%U',                      // Replaced by the week number of the year (Sunday as the first day of the week, rules corresponding to %U ) using the locale's alternative numeric symbols.
-        '%OV': '%V',                      // Replaced by the week number of the year (Monday as the first day of the week, rules corresponding to %V ) using the locale's alternative numeric symbols.
-        '%Ow': '%w',                      // Replaced by the number of the weekday (Sunday=0) using the locale's alternative numeric symbols.
-        '%OW': '%W',                      // Replaced by the week number of the year (Monday as the first day of the week) using the locale's alternative numeric symbols.
-        '%Oy': '%y',                      // Replaced by the year (offset from %C ) using the locale's alternative numeric symbols.
+        '%X': '%H:%M:%S'                  // Replaced by the locale's appropriate date representation
       };
       for (var rule in EXPANSION_RULES_1) {
         pattern = pattern.replace(new RegExp(rule, 'g'), EXPANSION_RULES_1[rule]);
@@ -3430,16 +3349,16 @@ function copyTempDouble(ptr) {
           str = character[0]+str;
         }
         return str;
-      }
+      };
   
       function leadingNulls(value, digits) {
         return leadingSomething(value, digits, '0');
-      }
+      };
   
       function compareByDay(date1, date2) {
         function sgn(value) {
           return value < 0 ? -1 : (value > 0 ? 1 : 0);
-        }
+        };
   
         var compare;
         if ((compare = sgn(date1.getFullYear()-date2.getFullYear())) === 0) {
@@ -3448,7 +3367,7 @@ function copyTempDouble(ptr) {
           }
         }
         return compare;
-      }
+      };
   
       function getFirstWeekStartDate(janFourth) {
           switch (janFourth.getDay()) {
@@ -3467,7 +3386,7 @@ function copyTempDouble(ptr) {
             case 6: // Saturday
               return new Date(janFourth.getFullYear()-1, 11, 30);
           }
-      }
+      };
   
       function getWeekBasedYear(date) {
           var thisDate = __addDays(new Date(date.tm_year+1900, 0, 1), date.tm_yday);
@@ -3488,7 +3407,7 @@ function copyTempDouble(ptr) {
           } else {
             return thisDate.getFullYear()-1;
           }
-      }
+      };
   
       var EXPANSION_RULES_2 = {
         '%a': function(date) {
@@ -3565,7 +3484,8 @@ function copyTempDouble(ptr) {
           return '\t';
         },
         '%u': function(date) {
-          return date.tm_wday || 7;
+          var day = new Date(date.tm_year+1900, date.tm_mon+1, date.tm_mday, 0, 0, 0, 0);
+          return day.getDay() || 7;
         },
         '%U': function(date) {
           // Replaced by the week number of the year as a decimal number [00,53].
@@ -3622,7 +3542,8 @@ function copyTempDouble(ptr) {
           return leadingNulls(Math.ceil(daysDifference/7), 2);
         },
         '%w': function(date) {
-          return date.tm_wday;
+          var day = new Date(date.tm_year+1900, date.tm_mon+1, date.tm_mday, 0, 0, 0, 0);
+          return day.getDay();
         },
         '%W': function(date) {
           // Replaced by the week number of the year as a decimal number [00,53].
@@ -4351,7 +4272,7 @@ function invoke_vjji(index,a1,a2,a3,a4,a5) {
   }
 }
 
-var asmGlobalArg = {};
+var asmGlobalArg = {}
 
 var asmLibraryArg = {
   "abort": abort,
@@ -4474,10 +4395,7 @@ var asmLibraryArg = {
   "___cxa_rethrow": ___cxa_rethrow,
   "___cxa_rethrow_primary_exception": ___cxa_rethrow_primary_exception,
   "___cxa_throw": ___cxa_throw,
-  "___cxa_uncaught_exceptions": ___cxa_uncaught_exceptions,
-  "___exception_addRef": ___exception_addRef,
-  "___exception_deAdjust": ___exception_deAdjust,
-  "___exception_decRef": ___exception_decRef,
+  "___cxa_uncaught_exception": ___cxa_uncaught_exception,
   "___gxx_personality_v0": ___gxx_personality_v0,
   "___lock": ___lock,
   "___map_file": ___map_file,
@@ -4501,7 +4419,6 @@ var asmLibraryArg = {
   "__embind_register_std_string": __embind_register_std_string,
   "__embind_register_std_wstring": __embind_register_std_wstring,
   "__embind_register_void": __embind_register_void,
-  "__emscripten_syscall_munmap": __emscripten_syscall_munmap,
   "__emval_call": __emval_call,
   "__emval_decref": __emval_decref,
   "__emval_lookupTypes": __emval_lookupTypes,
@@ -4559,7 +4476,7 @@ var asmLibraryArg = {
   "whenDependentTypesAreResolved": whenDependentTypesAreResolved,
   "tempDoublePtr": tempDoublePtr,
   "DYNAMICTOP_PTR": DYNAMICTOP_PTR
-};
+}
 // EMSCRIPTEN_START_ASM
 var asm =Module["asm"]// EMSCRIPTEN_END_ASM
 (asmGlobalArg, asmLibraryArg, buffer);
@@ -4590,13 +4507,6 @@ asm["___cxa_is_pointer_type"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
   return real____cxa_is_pointer_type.apply(null, arguments);
-};
-
-var real____embind_register_native_and_builtin_types = asm["___embind_register_native_and_builtin_types"];
-asm["___embind_register_native_and_builtin_types"] = function() {
-  assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
-  assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return real____embind_register_native_and_builtin_types.apply(null, arguments);
 };
 
 var real____getTypeName = asm["___getTypeName"];
@@ -4740,12 +4650,6 @@ var ___cxa_is_pointer_type = Module["___cxa_is_pointer_type"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
   return Module["asm"]["___cxa_is_pointer_type"].apply(null, arguments)
-};
-
-var ___embind_register_native_and_builtin_types = Module["___embind_register_native_and_builtin_types"] = function() {
-  assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
-  assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["___embind_register_native_and_builtin_types"].apply(null, arguments)
 };
 
 var ___getTypeName = Module["___getTypeName"] = function() {
@@ -5271,7 +5175,7 @@ function ExitStatus(status) {
   this.name = "ExitStatus";
   this.message = "Program terminated with exit(" + status + ")";
   this.status = status;
-}
+};
 ExitStatus.prototype = new Error();
 ExitStatus.prototype.constructor = ExitStatus;
 
@@ -5281,13 +5185,15 @@ dependenciesFulfilled = function runCaller() {
   // If run has never been called, and we should call run (INVOKE_RUN is true, and Module.noInitialRun is not false)
   if (!Module['calledRun']) run();
   if (!Module['calledRun']) dependenciesFulfilled = runCaller; // try this again later, after new deps are fulfilled
-};
+}
 
 Module['callMain'] = function callMain(args) {
   assert(runDependencies == 0, 'cannot call main when async dependencies remain! (listen on Module["onRuntimeInitialized"])');
   assert(__ATPRERUN__.length == 0, 'cannot call main when preRun functions remain to be called');
 
   args = args || [];
+
+  ensureInitRuntime();
 
   var argc = args.length+1;
   var argv = stackAlloc((argc + 1) * 4);
@@ -5300,7 +5206,7 @@ Module['callMain'] = function callMain(args) {
 
   try {
 
-    var ret = Module['_main'](argc, argv);
+    var ret = Module['_main'](argc, argv, 0);
 
 
     // if we're not running an evented main loop, it's time to exit
@@ -5352,7 +5258,7 @@ function run(args) {
 
     if (ABORT) return;
 
-    initRuntime();
+    ensureInitRuntime();
 
     preMain();
 
@@ -5444,9 +5350,13 @@ function abort(what) {
     Module['onAbort'](what);
   }
 
-  what += '';
-  out(what);
-  err(what);
+  if (what !== undefined) {
+    out(what);
+    err(what);
+    what = JSON.stringify(what)
+  } else {
+    what = '';
+  }
 
   ABORT = true;
   EXITSTATUS = 1;
